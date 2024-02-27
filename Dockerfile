@@ -9,6 +9,11 @@ RUN apt-get update \
 # Do things
 RUN gem install rake-compiler
 RUN gem install bundler -v 2.4.22
-#RUN bundle install
+
 WORKDIR /usr/src/app
 COPY . .
+RUN bundle install
+WORKDIR /usr/src/app/do_mysql
+RUN bundle install
+WORKDIR /usr/src/app
+
