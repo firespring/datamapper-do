@@ -29,4 +29,12 @@ if JRUBY
   end
 end
 
+# TODO: Workaround for old rspec version
+module TempFixForRakeLastComment
+  def last_comment
+    last_description
+  end 
+end
+Rake::Application.send :include, TempFixForRakeLastComment
+
 FileList['tasks/**/*.rake'].each { |task| import task }
