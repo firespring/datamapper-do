@@ -1,7 +1,7 @@
 FROM ruby:2.6.10-slim-bullseye
 
 RUN apt-get update \
-    && apt-get install -y build-essential vim \
+    && apt-get install -y build-essential default-libmysqlclient-dev vim \
     && apt-get autoremove -y \
     && apt-get clean \
     && rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
