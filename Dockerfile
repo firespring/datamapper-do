@@ -15,5 +15,11 @@ COPY . .
 RUN bundle install
 WORKDIR /usr/src/app/do_mysql
 RUN bundle install
-WORKDIR /usr/src/app
+RUN rake clean
+RUN rake clobber
+RUN rake compile
+RUN rake build
+#RUN rake install:local
 
+WORKDIR /usr/src/app
+CMD ["bash", "-c", "while [ true ]; do sleep 300; done"]

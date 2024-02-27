@@ -1,0 +1,31 @@
+---
+version: '3.7'
+services:
+  app:
+    image: datamapper-do:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      HISTFILE: var/www/.history/bash
+      DO_MYSQL_USER: test
+      DO_MYSQL_PASS: test123
+      DO_MYSQL_HOST: mysql
+      DO_MYSQL_DATABASE: /test
+    volumes:
+      - ../dotfiles/.history:/var/www/.history:delegated
+      - .:/usr/src/app:delegated
+
+  mysql:
+    image: mysql:8.0
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      HISTFILE: var/www/.history/bash
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+      MYSQL_DATABASE: test
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test123
+
+volumes:
+  mysql-data:
