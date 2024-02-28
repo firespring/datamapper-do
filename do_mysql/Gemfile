@@ -1,6 +1,6 @@
-source :rubygems
+source "https://rubygems.org"
 
-path '../'
+gem 'rspec', '~> 2.5'
 
 gemspec
 
