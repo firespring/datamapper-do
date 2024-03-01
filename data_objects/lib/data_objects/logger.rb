@@ -1,17 +1,14 @@
-require "time" # httpdate
+require 'time' # httpdate
 
 module DataObjects
-
   module Logging
-
     def log(message)
       logger = driver_namespace.logger
-      if logger.level <= DataObjects::Logger::LEVELS[:debug]
-        message = "(%.6f) %s" % [message.duration / 1000000.0, message.query]
-        logger.debug message
-      end
-    end
+      return unless logger.level <= DataObjects::Logger::LEVELS[:debug]
 
+      message = format('(%.6f) %s', message.duration / 1_000_000.0, message.query)
+      logger.debug message
+    end
   end
 
   class << self
@@ -51,7 +48,6 @@ module DataObjects
   # This avoids file creation on DataObjects init when it creates the
   # default logger.
   class Logger
-
     # Use asynchronous I/O?
     attr_accessor :aio
     # delimiter to use between message sections
@@ -76,14 +72,14 @@ module DataObjects
     #
     # DataObjects::Logger::LEVELS[:off, :fatal, :error, :warn, :info, :debug]
     LEVELS =
-    {
-      :off   => 99999,
-      :fatal => 7,
-      :error => 6,
-      :warn  => 4,
-      :info  => 3,
-      :debug => 0
-    }
+      {
+        off: 99_999,
+        fatal: 7,
+        error: 6,
+        warn: 4,
+        info: 3,
+        debug: 0
+      }
 
     # Set the log level (use the level symbols as documented)
     def level=(new_level)
@@ -97,12 +93,11 @@ module DataObjects
     # each logging we do it once when the log object is setup
     def set_write_method
       @log.instance_eval do
-
         # Determine if asynchronous IO can be used
         def aio?
           @aio = !RUBY_PLATFORM.match(/java|mswin/) &&
-          !(@log == STDOUT) &&
-          @log.respond_to?(:write_nonblock)
+                 !(@log == STDOUT) &&
+                 @log.respond_to?(:write_nonblock)
         end
 
         # Define the write method based on if aio an be used
@@ -117,7 +112,7 @@ module DataObjects
 
     def initialize_log(log)
       close if @log # be sure that we don't leave open files laying around.
-      @log = log || "log/dm.log"
+      @log = log || 'log/dm.log'
     end
 
     def reset_methods(o_or_c)
@@ -132,7 +127,7 @@ module DataObjects
       message = Time.now.httpdate
       message << delimiter
       message << string
-      message << "\n" unless message[-1] == ?\n
+      message << "\n" unless message[-1] == "\n"
       @buffer << message
       flush # Force a flush for now until we figure out where we want to use the buffering.
     end
@@ -177,14 +172,14 @@ module DataObjects
     #   {:off, :fatal, :error, :warn, :info, :debug}
     # @param delimiter<String>     delimiter to use between message sections
     # @param log_creation<Boolean> log that the file is being created
-    def set_log(log, log_level = :off, delimiter = " ~ ", log_creation = false)
-      delimiter    ||= " ~ "
+    def set_log(log, log_level = :off, delimiter = ' ~ ', log_creation = false)
+      delimiter    ||= ' ~ '
 
-      if log_level && LEVELS[log_level.to_sym]
-        self.level = log_level.to_sym
-      else
-        self.level = :debug
-      end
+      self.level = if log_level && LEVELS[log_level.to_sym]
+                     log_level.to_sym
+                   else
+                     :debug
+                   end
 
       @buffer    = []
       @delimiter = delimiter
@@ -193,7 +188,7 @@ module DataObjects
 
       DataObjects.logger = self
 
-      self.info("Logfile created") if log_creation
+      info('Logfile created') if log_creation
     end
 
     # Flush the entire buffer to the log object.
@@ -201,6 +196,7 @@ module DataObjects
     #
     def flush
       return unless @buffer.size > 0
+
       @log.write_method(@buffer.slice!(0..-1).join)
     end
 
@@ -243,13 +239,12 @@ module DataObjects
         EOS
       end
 
-      class_eval <<-EOS, __FILE__, __LINE__
+      class_eval <<-EOS, __FILE__, __LINE__ + 1
         # DOC
         def #{name}?
           #{number} >= level
         end
       EOS
     end
-
   end # class Logger
 end # module DataObjects

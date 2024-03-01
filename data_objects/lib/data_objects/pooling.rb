@@ -2,18 +2,16 @@ require 'set'
 require 'thread'
 
 module DataObjects
-
-  def self.exiting= bool
-    if bool && DataObjects.const_defined?('Pooling')
-      if DataObjects::Pooling.scavenger?
-        DataObjects::Pooling.scavenger.wakeup
-      end
+  def self.exiting=(bool)
+    if bool && DataObjects.const_defined?('Pooling') && DataObjects::Pooling.scavenger?
+      DataObjects::Pooling.scavenger.wakeup
     end
     @exiting = true
   end
 
   def self.exiting
     return @exiting if defined?(@exiting)
+
     @exiting = false
   end
 
@@ -39,7 +37,6 @@ module DataObjects
   # Pool obviously has to be thread safe because state of
   # object is reset when it is released.
   module Pooling
-
     def self.scavenger?
       defined?(@scavenger) && !@scavenger.nil? && @scavenger.alive?
     end
@@ -58,18 +55,14 @@ module DataObjects
                 # This is a useful check, but non-essential, and right now it breaks lots of stuff.
                 # if pool.expired?
                 pool.lock.synchronize do
-                  if pool.expired?
-                    pool.dispose
-                  end
+                  pool.dispose if pool.expired?
                 end
                 # end
               end
 
               # The pool is empty, we stop the scavenger
               # It wil be restarted if new resources are added again
-              if pools.empty?
-                running = false
-              end
+              running = false if pools.empty?
             end
           end # loop
         end
@@ -102,7 +95,7 @@ module DataObjects
         unless target.respond_to? :__pools
           target.class_eval do
             class << self
-              alias __new new
+              alias_method :__new, :new
             end
 
             @__pools     = {}
@@ -118,7 +111,7 @@ module DataObjects
             end
 
             def self.new(*args)
-              (@__pools[args] ||= __pool_lock.synchronize { Pool.new(self.pool_size, self, args) }).new
+              (@__pools[args] ||= __pool_lock.synchronize { Pool.new(pool_size, self, args) }).new
             end
 
             def self.__pools
@@ -142,11 +135,12 @@ module DataObjects
     end
 
     class Pool
-      attr_reader :available
-      attr_reader :used
+      attr_reader :available, :used
 
       def initialize(max_size, resource, args)
-        raise ArgumentError.new("+max_size+ should be an Integer but was #{max_size.inspect}") unless max_size.is_a?(Integer)
+        unless max_size.is_a?(Integer)
+          raise ArgumentError.new("+max_size+ should be an Integer but was #{max_size.inspect}")
+        end
         raise ArgumentError.new("+resource+ should be a Class but was #{resource.inspect}") unless resource.is_a?(Class)
 
         @max_size = max_size
@@ -181,6 +175,7 @@ module DataObjects
               instance = @resource.__new(*@args)
               raise InvalidResourceError.new("#{@resource} constructor created a nil object") if instance.nil?
               raise InvalidResourceError.new("#{instance} is already part of the pool") if @used.include? instance
+
               instance.instance_variable_set(:@__pool, self)
               instance.instance_variable_set(:@__allocated_in_pool, Time.now)
               @used[instance.object_id] = instance
@@ -244,7 +239,6 @@ module DataObjects
         end
         size == 0
       end
-
     end
 
     def self.scavenger_interval

@@ -1,5 +1,4 @@
 shared_examples_for 'supporting Range' do
-
   before :all do
     setup_test_environment
   end
@@ -13,9 +12,8 @@ shared_examples_for 'supporting Range' do
   end
 
   describe 'passing a Range as a parameter in execute_reader' do
-
     before do
-      @reader = @connection.create_command("SELECT * FROM widgets WHERE id between ?").execute_reader(2..5)
+      @reader = @connection.create_command('SELECT * FROM widgets WHERE id between ?').execute_reader(2..5)
     end
 
     after do
@@ -24,11 +22,8 @@ shared_examples_for 'supporting Range' do
 
     it 'should return correct number of rows' do
       counter  = 0
-      while(@reader.next!) do
-        counter += 1
-      end
+      counter += 1 while @reader.next!
       counter.should == 4
     end
-
   end
 end

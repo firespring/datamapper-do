@@ -1,8 +1,8 @@
 module DataObjects::Spec
   module PendingHelpers
-    def pending_if(message, boolean)
+    def pending_if(message, boolean, &block)
       if boolean
-        pending(message) { yield }
+        pending(message, &block)
       else
         yield
       end

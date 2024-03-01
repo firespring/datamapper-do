@@ -1,5 +1,5 @@
 def test_connection(conn)
-  reader = conn.create_command(CONFIG.testsql || "SELECT 1").execute_reader
+  reader = conn.create_command(CONFIG.testsql || 'SELECT 1').execute_reader
   reader.next!
   result = reader.values[0]
   result
@@ -9,7 +9,6 @@ ensure
 end
 
 shared_examples_for 'a Connection' do
-
   before :all do
     setup_test_environment
   end
@@ -26,7 +25,7 @@ shared_examples_for 'a Connection' do
   it { @connection.should be_kind_of(DataObjects::Pooling) }
 
   it { @connection.should respond_to(:dispose) }
-  it 'should respond to #create_command' do @connection.should respond_to(:create_command)          end
+  it 'should respond to #create_command' do @connection.should respond_to(:create_command) end
 
   describe 'create_command' do
     it 'should be a kind of Command' do
@@ -35,44 +34,38 @@ shared_examples_for 'a Connection' do
   end
 
   describe 'various connection URIs' do
-
     it 'should open with an uri object' do
       uri = DataObjects::URI.new(
-              :scheme   => @driver,
-              :user     => @user,
-              :password => @password,
-              :host     => @host,
-              :port     => @port && @port.to_i,
-              :path     => @database
-            )
+        scheme: @driver,
+        user: @user,
+        password: @password,
+        host: @host,
+        port: @port && @port.to_i,
+        path: @database
+      )
       conn = DataObjects::Connection.new(uri)
-      test_connection(conn).should == 1
+      test_connection(conn).should eq 1
       conn.close
     end
 
     it 'should work with non-JDBC URLs' do
       conn = DataObjects::Connection.new("#{CONFIG.uri.sub(/jdbc:/, '')}")
-      test_connection(conn).should == 1
+      test_connection(conn).should eq 1
       conn.close
     end
-
   end
 
   describe 'dispose' do
-
     describe 'on open connection' do
-
       it 'dispose should be true' do
         conn = DataObjects::Connection.new(CONFIG.uri)
         conn.detach
         conn.dispose.should be true
         conn.close
       end
-
     end
 
     describe 'on closed connection' do
-
       before do
         @closed_connection = DataObjects::Connection.new(CONFIG.uri)
         @closed_connection.detach
@@ -87,98 +80,85 @@ shared_examples_for 'a Connection' do
       it { @closed_connection.dispose.should be false }
 
       it 'should raise an error on creating a command' do
-        expect {
-          @closed_connection.create_command("INSERT INTO non_existent_table (tester) VALUES (1)").execute_non_query
-        }.to raise_error(DataObjects::ConnectionError)
+        expect do
+          @closed_connection.create_command('INSERT INTO non_existent_table (tester) VALUES (1)').execute_non_query
+        end.to raise_error(DataObjects::ConnectionError)
       end
     end
-
   end
-
 end
 
 shared_examples_for 'a Connection with authentication support' do
-
   before :all do
-    %w[ @driver @user @password @host @port @database ].each do |ivar|
+    %w[@driver @user @password @host @port @database].each do |ivar|
       raise "+#{ivar}+ should be defined in before block" unless instance_variable_get(ivar)
     end
   end
 
   describe 'with an invalid URI' do
-
-    # FIXME JRuby (and MRI): Should these be ArgumentError or DataObjects::SQLError?
+    # FIXME: JRuby (and MRI): Should these be ArgumentError or DataObjects::SQLError?
 
     def connecting_with(uri)
-      lambda { DataObjects::Connection.new(uri) }
+      -> { DataObjects::Connection.new(uri) }
     end
 
     it 'should raise an error if bad username is given' do
-      connecting_with("#{@driver}://thisreallyshouldntexist:#{@password}@#{@host}:#{@port}#{@database}").should raise_error #(ArgumentError, DataObjects::Error)
+      connecting_with("#{@driver}://thisreallyshouldntexist:#{@password}@#{@host}:#{@port}#{@database}").should raise_error # (ArgumentError, DataObjects::Error)
     end
 
     it 'should raise an error if bad password is given' do
-      connecting_with("#{@driver}://#{@user}:completelyincorrectpassword:#{@host}:#{@port}#{@database}").should raise_error #(ArgumentError, DataObjects::Error)
+      connecting_with("#{@driver}://#{@user}:completelyincorrectpassword:#{@host}:#{@port}#{@database}").should raise_error # (ArgumentError, DataObjects::Error)
     end
 
     it 'should raise an error if an invalid port is given' do
-      connecting_with("#{@driver}://#{@user}:#{@password}:#{@host}:648646543#{@database}").should raise_error #(ArgumentError, DataObjects::Error)
+      connecting_with("#{@driver}://#{@user}:#{@password}:#{@host}:648646543#{@database}").should raise_error # (ArgumentError, DataObjects::Error)
     end
 
     it 'should raise an error if an invalid database is given' do
-      connecting_with("#{@driver}://#{@user}:#{@password}:#{@host}:#{@port}/someweirddatabase").should raise_error #(ArgumentError, DataObjects::Error)
+      connecting_with("#{@driver}://#{@user}:#{@password}:#{@host}:#{@port}/someweirddatabase").should raise_error # (ArgumentError, DataObjects::Error)
     end
-
   end
-
 end
 
 shared_examples_for 'a Connection allowing default database' do
   describe 'with a URI without a database' do
     it 'should connect properly' do
       conn = DataObjects::Connection.new("#{@driver}://#{@user}:#{@password}@#{@host}:#{@port}")
-      test_connection(conn).should == 1
+      test_connection(conn).should eq 1
     end
   end
 end
 
-shared_examples_for 'a Connection with JDBC URL support' do
-
-  it 'should work with JDBC URLs' do
-    conn = DataObjects::Connection.new(CONFIG.jdbc_uri || "jdbc:#{CONFIG.uri.sub(/jdbc:/, '')}")
-    test_connection(conn).should == 1
+if defined? JRUBY_VERSION
+  shared_examples_for 'a Connection with JDBC URL support' do
+    it 'should work with JDBC URLs' do
+      conn = DataObjects::Connection.new(CONFIG.jdbc_uri || "jdbc:#{CONFIG.uri.sub(/jdbc:/, '')}")
+      test_connection(conn).should eq 1
+    end
   end
-
-end if defined? JRUBY_VERSION
+end
 
 shared_examples_for 'a Connection with SSL support' do
-
   if DataObjectsSpecHelpers.test_environment_supports_ssl?
     describe 'connecting with SSL' do
-
       it 'should connect securely' do
         conn = DataObjects::Connection.new("#{CONFIG.uri}?#{CONFIG.ssl}")
-        conn.secure?.should be_true
+        conn.secure?.should be true
         conn.close
       end
-
     end
   end
 
   describe 'connecting without SSL' do
-
     it 'should not connect securely' do
       conn = DataObjects::Connection.new(CONFIG.uri)
       conn.secure?.should be false
       conn.close
     end
-
   end
-
 end
 
 shared_examples_for 'a Connection via JDNI' do
-
   if defined? JRUBY_VERSION
     require 'java'
     begin
@@ -192,7 +172,6 @@ shared_examples_for 'a Connection via JDNI' do
     end
 
     describe 'connecting with JNDI' do
-
       before(:all) do
         java_import java.lang.System
         java_import javax.naming.Context
@@ -203,8 +182,8 @@ shared_examples_for 'a Connection via JDNI' do
         java_import 'tyrex.tm.RuntimeContext'
 
         System.set_property(Context.INITIAL_CONTEXT_FACTORY, 'tyrex.naming.MemoryContextFactory')
-        ref  = Reference.new('javax.sql.DataSource',
-                             'org.apache.commons.dbcp.BasicDataSourceFactory', nil)
+        ref = Reference.new('javax.sql.DataSource',
+                            'org.apache.commons.dbcp.BasicDataSourceFactory', nil)
         ref.add(StringRefAddr.new('driverClassName',  CONFIG.jdbc_driver))
         ref.add(StringRefAddr.new('url',              (CONFIG.jdbc_uri || CONFIG.uri)))
         ref.add(StringRefAddr.new('username',         CONFIG.user))
@@ -223,17 +202,15 @@ shared_examples_for 'a Connection via JDNI' do
       end
 
       after do
-        RuntimeContext.unsetRuntimeContext()
+        RuntimeContext.unsetRuntimeContext
       end
 
       it 'should connect' do
-        begin
-          c = DataObjects::Connection.new("java:comp/env/jdbc/mydb?driver=#{CONFIG.driver}")
-          c.should_not be_nil
-          test_connection(c).should == 1
-        ensure
-          c.close if c
-        end
+        c = DataObjects::Connection.new("java:comp/env/jdbc/mydb?driver=#{CONFIG.driver}")
+        c.should_not be_nil
+        test_connection(c).should eq 1
+      ensure
+        c.close if c
       end
     end
   end

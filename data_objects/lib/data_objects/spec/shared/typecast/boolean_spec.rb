@@ -1,5 +1,4 @@
 shared_examples_for 'supporting Boolean' do
-
   before :all do
     setup_test_environment
   end
@@ -13,11 +12,9 @@ shared_examples_for 'supporting Boolean' do
   end
 
   describe 'reading a Boolean' do
-
     describe 'with manual typecasting' do
-
       before do
-        @command = @connection.create_command("SELECT flags FROM widgets WHERE ad_description = ?")
+        @command = @connection.create_command('SELECT flags FROM widgets WHERE ad_description = ?')
         @command.set_types(TrueClass)
         @reader = @command.execute_reader('Buy this product now!')
         @reader.next!
@@ -33,15 +30,13 @@ shared_examples_for 'supporting Boolean' do
       end
 
       it 'should return the correct result' do
-        @values.first.should == false
+        @values.first.should eq false
       end
-
     end
 
     describe 'with manual typecasting a true value' do
-
       before do
-        @command = @connection.create_command("SELECT flags FROM widgets WHERE id = ?")
+        @command = @connection.create_command('SELECT flags FROM widgets WHERE id = ?')
         @command.set_types(TrueClass)
         @reader = @command.execute_reader(2)
         @reader.next!
@@ -57,15 +52,13 @@ shared_examples_for 'supporting Boolean' do
       end
 
       it 'should return the correct result' do
-       @values.first.should be_true
+        @values.first.should be true
       end
-
     end
 
     describe 'with manual typecasting a nil value' do
-
       before do
-        @command = @connection.create_command("SELECT flags FROM widgets WHERE id = ?")
+        @command = @connection.create_command('SELECT flags FROM widgets WHERE id = ?')
         @command.set_types(TrueClass)
         @reader = @command.execute_reader(4)
         @reader.next!
@@ -81,17 +74,14 @@ shared_examples_for 'supporting Boolean' do
       end
 
       it 'should return the correct result' do
-       @values.first.should be_nil
+        @values.first.should be_nil
       end
-
     end
-
   end
 
   describe 'writing an Boolean' do
-
     before do
-      @reader = @connection.create_command("SELECT id FROM widgets WHERE flags = ?").execute_reader(true)
+      @reader = @connection.create_command('SELECT id FROM widgets WHERE flags = ?').execute_reader(true)
       @reader.next!
       @values = @reader.values
     end
@@ -101,15 +91,12 @@ shared_examples_for 'supporting Boolean' do
     end
 
     it 'should return the correct entry' do
-      @values.first.should == 2
+      @values.first.should eq 2
     end
-
   end
-
 end
 
 shared_examples_for 'supporting Boolean autocasting' do
-
   before :all do
     setup_test_environment
   end
@@ -123,11 +110,9 @@ shared_examples_for 'supporting Boolean autocasting' do
   end
 
   describe 'reading a Boolean' do
-
     describe 'with automatic typecasting' do
-
       before do
-        @reader = @connection.create_command("SELECT flags FROM widgets WHERE ad_description = ?").execute_reader('Buy this product now!')
+        @reader = @connection.create_command('SELECT flags FROM widgets WHERE ad_description = ?').execute_reader('Buy this product now!')
         @reader.next!
         @values = @reader.values
       end
@@ -141,11 +126,8 @@ shared_examples_for 'supporting Boolean autocasting' do
       end
 
       it 'should return the correct result' do
-        @values.first.should == false
+        @values.first.should eq false
       end
-
     end
-
   end
-
 end

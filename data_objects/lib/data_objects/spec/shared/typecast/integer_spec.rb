@@ -1,5 +1,4 @@
 shared_examples_for 'supporting Integer' do
-
   before :all do
     setup_test_environment
   end
@@ -13,11 +12,9 @@ shared_examples_for 'supporting Integer' do
   end
 
   describe 'reading an Integer' do
-
     describe 'with automatic typecasting' do
-
       before do
-        @reader = @connection.create_command("SELECT id FROM widgets WHERE ad_description = ?").execute_reader('Buy this product now!')
+        @reader = @connection.create_command('SELECT id FROM widgets WHERE ad_description = ?').execute_reader('Buy this product now!')
         @reader.next!
         @values = @reader.values
       end
@@ -31,16 +28,14 @@ shared_examples_for 'supporting Integer' do
       end
 
       it 'should return the correct result' do
-        #Some of the drivers starts autoincrementation from 0 not 1
-        @values.first.should satisfy { |val| val == 1 or val == 0 }
+        # Some of the drivers starts autoincrementation from 0 not 1
+        @values.first.should(satisfy { |val| [1, 0].include?(val) })
       end
-
     end
 
     describe 'with manual typecasting' do
-
       before do
-        @command = @connection.create_command("SELECT weight FROM widgets WHERE ad_description = ?")
+        @command = @connection.create_command('SELECT weight FROM widgets WHERE ad_description = ?')
         @command.set_types(Integer)
         @reader = @command.execute_reader('Buy this product now!')
         @reader.next!
@@ -56,17 +51,14 @@ shared_examples_for 'supporting Integer' do
       end
 
       it 'should return the correct result' do
-        @values.first.should == 13
+        @values.first.should eq 13
       end
-
     end
-
   end
 
   describe 'writing an Integer' do
-
     before do
-      @reader = @connection.create_command("SELECT id FROM widgets WHERE id = ?").execute_reader(2)
+      @reader = @connection.create_command('SELECT id FROM widgets WHERE id = ?').execute_reader(2)
       @reader.next!
       @values = @reader.values
     end
@@ -76,16 +68,14 @@ shared_examples_for 'supporting Integer' do
     end
 
     it 'should return the correct entry' do
-      @values.first.should == 2
+      @values.first.should eq 2
     end
-
   end
 
   describe 'writing a big Integer' do
-
     before do
-      @connection.create_command("UPDATE widgets SET super_number = ? WHERE id = 10").execute_non_query(2147483648) # bigger than Integer.MAX in java !!
-      @reader = @connection.create_command("SELECT super_number FROM widgets WHERE id = ?").execute_reader(10)
+      @connection.create_command('UPDATE widgets SET super_number = ? WHERE id = 10').execute_non_query(2_147_483_648) # bigger than Integer.MAX in java !!
+      @reader = @connection.create_command('SELECT super_number FROM widgets WHERE id = ?').execute_reader(10)
       @reader.next!
       @values = @reader.values
     end
@@ -95,9 +85,7 @@ shared_examples_for 'supporting Integer' do
     end
 
     it 'should return the correct entry' do
-      @values.first.should == 2147483648
+      @values.first.should eq 2_147_483_648
     end
-
   end
-
 end

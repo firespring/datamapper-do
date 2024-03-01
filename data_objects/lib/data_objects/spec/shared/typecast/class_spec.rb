@@ -1,5 +1,4 @@
 shared_examples_for 'supporting Class' do
-
   before :all do
     setup_test_environment
   end
@@ -13,11 +12,9 @@ shared_examples_for 'supporting Class' do
   end
 
   describe 'reading a Class' do
-
     describe 'with manual typecasting' do
-
       before do
-        @command = @connection.create_command("SELECT whitepaper_text FROM widgets WHERE ad_description = ?")
+        @command = @connection.create_command('SELECT whitepaper_text FROM widgets WHERE ad_description = ?')
         @command.set_types(Class)
         @reader = @command.execute_reader('Buy this product now!')
         @reader.next!
@@ -33,17 +30,14 @@ shared_examples_for 'supporting Class' do
       end
 
       it 'should return the correct result' do
-        @values.first.should == String
+        @values.first.should be_a(String)
       end
-
     end
-
   end
 
   describe 'writing a Class' do
-
     before do
-      @reader = @connection.create_command("SELECT whitepaper_text FROM widgets WHERE whitepaper_text = ?").execute_reader(String)
+      @reader = @connection.create_command('SELECT whitepaper_text FROM widgets WHERE whitepaper_text = ?').execute_reader(String)
       @reader.next!
       @values = @reader.values
     end
@@ -53,9 +47,7 @@ shared_examples_for 'supporting Class' do
     end
 
     it 'should return the correct entry' do
-      @values.first.should == "String"
+      @values.first.should eq 'String'
     end
-
   end
-
 end

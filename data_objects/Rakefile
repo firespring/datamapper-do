@@ -16,6 +16,6 @@ IRONRUBY = defined?(RUBY_ENGINE) && RUBY_ENGINE == 'ironruby'
 WINDOWS  = Gem.win_platform? || (JRUBY && ENV_JAVA['os.name'] =~ /windows/i)
 SUDO     = WINDOWS ? '' : ('sudo' unless ENV['SUDOLESS'])
 
-CLEAN.include(%w[ pkg/ **/*.rbc ])
+CLEAN.include(%w[pkg/ **/*.rbc])
 
 FileList['tasks/**/*.rake'].each { |task| import task }

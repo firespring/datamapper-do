@@ -1,5 +1,4 @@
 shared_examples_for 'supporting Array' do
-
   before :all do
     setup_test_environment
   end
@@ -13,9 +12,8 @@ shared_examples_for 'supporting Array' do
   end
 
   describe 'passing an Array as a parameter in execute_reader' do
-
     before do
-      @reader = @connection.create_command('SELECT * FROM widgets WHERE id in ?').execute_reader([2,3,4,5])
+      @reader = @connection.create_command('SELECT * FROM widgets WHERE id in ?').execute_reader([2, 3, 4, 5])
     end
 
     after do
@@ -27,6 +25,5 @@ shared_examples_for 'supporting Array' do
       counter += 1 while @reader.next!
       counter.should == 4
     end
-
   end
 end

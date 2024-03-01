@@ -1,7 +1,6 @@
 module DataObjects
   # Abstract class to read rows from a query result
   class Reader
-
     include Enumerable
 
     # Return the array of field names
@@ -42,6 +41,5 @@ module DataObjects
       end
       self
     end
-
   end
 end
