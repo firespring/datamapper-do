@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 Gem::Specification.new do |s|
   s.name = 'do_mysql'
   s.version = '0.10.18'
@@ -87,18 +88,18 @@ Gem::Specification.new do |s|
   if s.respond_to? :specification_version
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<data_objects>, ["= 0.10.17"])
-      s.add_development_dependency(%q<rspec>, ["~> 3.13"])
-      s.add_development_dependency(%q<rake-compiler>, ["~> 0.7"])
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0')
+      s.add_runtime_dependency('data_objects', ['= 0.10.17'])
+      s.add_development_dependency('rake-compiler', ['~> 0.7'])
+      s.add_development_dependency('rspec', ['~> 3.13'])
     else
-      s.add_dependency(%q<data_objects>, ["= 0.10.17"])
-      s.add_dependency(%q<rspec>, ["~> 3.13"])
-      s.add_dependency(%q<rake-compiler>, ["~> 0.7"])
+      s.add_dependency('data_objects', ['= 0.10.17'])
+      s.add_dependency('rake-compiler', ['~> 0.7'])
+      s.add_dependency('rspec', ['~> 3.13'])
     end
   else
-    s.add_dependency(%q<data_objects>, ["= 0.10.17"])
-    s.add_dependency(%q<rspec>, ["~> 3.13"])
-    s.add_dependency(%q<rake-compiler>, ["~> 0.7"])
+    s.add_dependency('data_objects', ['= 0.10.17'])
+    s.add_dependency('rake-compiler', ['~> 0.7'])
+    s.add_dependency('rspec', ['~> 3.13'])
   end
 end

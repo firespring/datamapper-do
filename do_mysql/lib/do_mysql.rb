@@ -10,7 +10,7 @@ if RUBY_PLATFORM =~ /java/
   end
 
   begin
-    java.lang.Thread.currentThread.getContextClassLoader().loadClass(DataObjects::Mysql::JDBC_DRIVER, true)
+    java.lang.Thread.currentThread.getContextClassLoader.loadClass(DataObjects::Mysql::JDBC_DRIVER, true)
   rescue java.lang.ClassNotFoundException
     require 'jdbc/mysql' # the JDBC driver, packaged as a gem
     Jdbc::MySQL.load_driver if Jdbc::MySQL.respond_to?(:load_driver)
@@ -28,12 +28,10 @@ end
 begin
   require 'do_mysql/do_mysql'
 rescue LoadError
-  if RUBY_PLATFORM =~ /mingw|mswin/
-    RUBY_VERSION =~ /(\d+.\d+)/
-    require "do_mysql/#{$1}/do_mysql"
-  else
-    raise
-  end
+  raise unless RUBY_PLATFORM =~ /mingw|mswin/
+
+  RUBY_VERSION =~ /(\d+.\d+)/
+  require "do_mysql/#{Regexp.last_match(1)}/do_mysql"
 end
 
 require 'do_mysql/version'
@@ -43,7 +41,6 @@ require 'do_mysql/encoding'
 if RUBY_PLATFORM =~ /java/
 
   DataObjects::Mysql::Connection.class_eval do
-
     def using_socket?
       @using_socket
     end
@@ -51,7 +48,6 @@ if RUBY_PLATFORM =~ /java/
     def secure?
       false
     end
-
   end
 
 else

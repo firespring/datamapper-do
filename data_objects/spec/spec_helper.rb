@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'data_objects'
 require 'rspec'
+require 'rspec/its'
 
 module DataObjects::Pooling
   class << self
