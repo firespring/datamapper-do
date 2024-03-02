@@ -9,7 +9,9 @@ describe DataObjects::Mysql::Connection do
   unless JRUBY
     describe 'sets the character set through the URI' do
       before do
-        @utf8mb4_connection = DataObjects::Connection.new("#{CONFIG.scheme}://#{CONFIG.user}:#{CONFIG.pass}@#{CONFIG.host}:#{CONFIG.port}#{CONFIG.database}?encoding=UTF-8-MB4")
+        @utf8mb4_connection = DataObjects::Connection.new(
+          "#{CONFIG.scheme}://#{CONFIG.user}:#{CONFIG.pass}@#{CONFIG.host}:#{CONFIG.port}#{CONFIG.database}?encoding=UTF-8-MB4"
+        )
       end
 
       after { @utf8mb4_connection.close }
@@ -43,3 +45,4 @@ describe DataObjects::Mysql::Connection do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

@@ -56,3 +56,4 @@ describe DataObjects::Mysql::Connection do
 
   end
 end
+# rubocop:enable Metrics/BlockLength

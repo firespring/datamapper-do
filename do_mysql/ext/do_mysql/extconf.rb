@@ -21,13 +21,13 @@ end
 
 def mysql_config(type)
   IO.popen("#{default_mysql_config_path} --#{type}").readline.chomp
-rescue StandardError
+rescue
   nil
 end
 
 def default_prefix
-  if mc = default_mysql_config_path
-    File.dirname(File.dirname(mc))
+  if (mc = default_mysql_config_path)
+    File.dirname(mc, 2)
   else
     '/usr/local'
   end
@@ -42,7 +42,7 @@ if RUBY_PLATFORM =~ /mswin|mingw/
   have_library 'libmysql'
   have_func('mysql_query', 'mysql.h')
   have_func('mysql_ssl_set', 'mysql.h')
-elsif mc = with_config('mysql-config', default_mysql_config_path)
+elsif with_config('mysql-config', default_mysql_config_path)
   includes = mysql_config('include').split(/\s+/).map do |dir|
     dir.gsub(/^-I/, '')
   end.uniq
@@ -59,8 +59,7 @@ elsif mc = with_config('mysql-config', default_mysql_config_path)
     have_library link
   end
 else
-  inc, lib = dir_config('mysql', default_prefix)
-  libs = %w[m z socket nsl]
+  _, lib = dir_config('mysql', default_prefix)
   lib_dirs =
     [lib, '/usr/lib', '/usr/local/lib', '/opt/local/lib'].collect do |path|
       [path, "#{path}/mysql", "#{path}/mysql5/mysql"]
@@ -87,10 +86,12 @@ have_struct_member 'MYSQL_FIELD', 'charsetnr', 'mysql.h'
 
 have_func('rb_thread_fd_select')
 
+# rubocop:disable Style/GlobalVars
 $CFLAGS << ' -DHAVE_NO_DATETIME_NEWBANG' unless DateTime.respond_to?(:new!)
 
 $CFLAGS << ' -Wall '
 
 $CFLAGS << ' -DRUBY_LESS_THAN_186' if RUBY_VERSION < '1.8.6'
+# rubocop:enable Style/GlobalVars
 
 create_makefile('do_mysql/do_mysql')

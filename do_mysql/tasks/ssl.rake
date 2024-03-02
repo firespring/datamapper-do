@@ -5,13 +5,12 @@ namespace :ssl do
 
   desc 'Check test environment for SSL support.'
   task check: :env do
-    ssl_supported, messages = DataObjectsSpecHelpers.test_environment_supports_ssl?
+    DataObjectsSpecHelpers.test_environment_supports_ssl?
 
+    puts
     if DataObjectsSpecHelpers.test_environment_supports_ssl?
-      puts
       puts '** SSL successfully configured for the test environment **'
     else
-      puts
       puts '** SSL is not configured for the test environment **'
       puts
       puts DataObjectsSpecHelpers.test_environment_ssl_config_errors.join("\n")

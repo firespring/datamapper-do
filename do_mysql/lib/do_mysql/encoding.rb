@@ -33,7 +33,7 @@ module DataObjects
         'ASCII-8BIT' => 'binary',
         'Windows-31J' => 'cp932',
         'eucJP-ms' => 'eucjpms'
-      }
+      }.freeze
     end
   end
 end

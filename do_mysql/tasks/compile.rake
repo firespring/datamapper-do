@@ -4,7 +4,7 @@ begin
   require 'rake/javaextensiontask'
 
   def gemspec
-    @clean_gemspec ||= Gem::Specification.load(File.expand_path('../do_mysql.gemspec', __dir__))
+    @gemspec ||= Gem::Specification.load(File.expand_path('../do_mysql.gemspec', __dir__))
   end
 
   unless JRUBY
@@ -18,7 +18,7 @@ begin
         ext.config_options << "--with-mysql-lib=#{mysql_lib}/lib/opt"
       else
         ext.cross_compile = true
-        ext.cross_platform = %w[x86-mingw32 x86-mswin32-60]
+        ext.cross_platform = %w(x86-mingw32 x86-mswin32-60)
         ext.cross_config_options << "--with-mysql-include=#{mysql_lib}/include"
         ext.cross_config_options << "--with-mysql-lib=#{mysql_lib}/lib/opt"
 
@@ -51,7 +51,7 @@ begin
   Rake::JavaExtensionTask.new('do_mysql', gemspec) do |ext|
     ext.lib_dir   = "lib/#{gemspec.name}"
     ext.ext_dir   = 'ext-java/src/main/java'
-    ext.debug     = ENV.has_key?('DO_JAVA_DEBUG') && ENV['DO_JAVA_DEBUG']
+    ext.debug     = ENV.key?('DO_JAVA_DEBUG') && ENV.fetch('DO_JAVA_DEBUG', nil)
     ext.classpath = '../do_jdbc/lib/do_jdbc_internal.jar'
     ext.java_compiling do |gem|
       gem.add_dependency 'jdbc-mysql', '>=5.0.4'

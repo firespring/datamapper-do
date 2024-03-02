@@ -18,12 +18,12 @@ describe DataObjects::Mysql::Reader do
 
     describe 'showing correct column field names for a table' do
       let(:sql)     { 'SHOW COLUMNS FROM `widgets`' }
-      its(:fields)  { should eq %w[Field Type Null Key Default Extra] }
+      its(:fields)  { should eq %w(Field Type Null Key Default Extra) }
     end
 
     describe 'showing correct column field names for variables' do
       let(:sql)     { "SHOW VARIABLES LIKE 'character_set_connection'" }
-      its(:fields)  { should eq %w[Variable_name Value] }
+      its(:fields)  { should eq %w(Variable_name Value) }
     end
   end
 end

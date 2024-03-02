@@ -19,9 +19,7 @@ begin
              end
       "#{tool} --dllname #{dllname} --def #{deffile} --output-lib #{libfile}"
     else
-      unless RUBY_PLATFORM =~ /mswin/
-        raise 'Unsupported platform for cross-compilation (please, contribute some patches).'
-      end
+      raise 'Unsupported platform for cross-compilation (please, contribute some patches).' unless RUBY_PLATFORM =~ /mswin/
 
       tool = 'lib.exe'
 
@@ -59,7 +57,7 @@ begin
   # hook into cross compilation vendored mysql dependency
   if RUBY_PLATFORM =~ /mingw|mswin/
     Rake::Task['compile'].prerequisites.unshift 'vendor:mysql'
-  elsif Rake::Task.tasks.map { |t| t.name }.include? 'cross'
+  elsif Rake::Task.tasks.map(&:name).include? 'cross'
     Rake::Task['cross'].prerequisites.unshift 'vendor:mysql'
   end
 rescue LoadError

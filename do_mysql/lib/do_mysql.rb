@@ -5,7 +5,7 @@ if RUBY_PLATFORM =~ /java/
 
   module DataObjects
     module Mysql
-      JDBC_DRIVER = 'com.mysql.jdbc.Driver'
+      JDBC_DRIVER = 'com.mysql.jdbc.Driver'.freeze
     end
   end
 

@@ -1,4 +1,6 @@
+# rubocop:disable Style/GlobalVars
 $TESTING = true
+# rubocop:enable Style/GlobalVars
 JRUBY = RUBY_PLATFORM =~ /java/
 
 require 'rubygems'
@@ -26,7 +28,7 @@ require 'data_objects/spec/lib/ssl'
 require 'data_objects/spec/lib/pending_helpers'
 require 'do_mysql'
 
-DataObjects::Mysql.logger = DataObjects::Logger.new(STDOUT, :off)
+DataObjects::Mysql.logger = DataObjects::Logger.new($stdout, :off)
 at_exit { DataObjects.logger.flush }
 
 CONFIG = OpenStruct.new
@@ -46,14 +48,16 @@ CONFIG.ssl      = SSLHelpers.query(:ca_cert, :client_cert, :client_key)
 CONFIG.driver       = 'mysql'
 CONFIG.jdbc_driver  = begin
   DataObjects::Mysql.const_get('JDBC_DRIVER')
-rescue StandardError
+rescue
   nil
 end
-CONFIG.uri          = ENV['DO_MYSQL_SPEC_URI'] || "#{CONFIG.scheme}://#{CONFIG.user_info}#{CONFIG.host}:#{CONFIG.port}#{CONFIG.database}?zeroDateTimeBehavior=convertToNull"
+CONFIG.uri          = ENV['DO_MYSQL_SPEC_URI'] ||
+                      "#{CONFIG.scheme}://#{CONFIG.user_info}#{CONFIG.host}:#{CONFIG.port}#{CONFIG.database}?zeroDateTimeBehavior=convertToNull"
 CONFIG.jdbc_uri     = "jdbc:#{CONFIG.uri}"
 CONFIG.sleep        = 'SELECT sleep(1)'
 
 module DataObjectsSpecHelpers
+  # rubocop:disable Metrics/MethodLength
   def setup_test_environment
     conn = DataObjects::Connection.new(CONFIG.uri)
 
@@ -180,6 +184,7 @@ module DataObjectsSpecHelpers
 
     conn.close
   end
+  # rubocop:enable Metrics/MethodLength
 
   def self.test_environment_ssl_config
     ssl_config = SSLHelpers::CONFIG
@@ -219,25 +224,19 @@ module DataObjectsSpecHelpers
 
     errors << 'SSL was not enabled' if current_config[:have_ssl] == 'DISABLED'
 
-    if current_config[:ssl_ca] != ssl_config.ca_cert
-      errors << "The CA certificate is not configured (it was set to '#{current_config[:ssl_ca]}')"
-    end
+    errors << "The CA certificate is not configured (it was set to '#{current_config[:ssl_ca]}')" if current_config[:ssl_ca] != ssl_config.ca_cert
 
     if current_config[:ssl_cert] != ssl_config.server_cert
       errors << "The server certificate is not configured (it was set to '#{current_config[:ssl_cert]}')"
     end
 
-    if current_config[:ssl_key] != ssl_config.server_key
-      errors << "The server key is not configured, (it was set to '#{current_config[:ssl_key]}')"
-    end
+    errors << "The server key is not configured, (it was set to '#{current_config[:ssl_key]}')" if current_config[:ssl_key] != ssl_config.server_key
 
-    if current_config[:ssl_cipher] != ssl_config.cipher
-      errors << "The cipher is not configured, (it was set to '#{current_config[:ssl_cipher]}')"
-    end
+    errors << "The cipher is not configured, (it was set to '#{current_config[:ssl_cipher]}')" if current_config[:ssl_cipher] != ssl_config.cipher
 
     errors
   ensure
-    conn.close if conn
+    conn&.close
   end
 
   def self.test_environment_supports_ssl?
