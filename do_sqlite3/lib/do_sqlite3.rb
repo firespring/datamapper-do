@@ -5,7 +5,7 @@ if RUBY_PLATFORM =~ /java/
 
   module DataObjects
     module Sqlite3
-      JDBC_DRIVER = 'org.sqlite.JDBC'
+      JDBC_DRIVER = 'org.sqlite.JDBC'.freeze
     end
   end
 

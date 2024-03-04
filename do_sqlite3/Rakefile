@@ -9,13 +9,15 @@ require 'rake/clean'
 
 ROOT = Pathname(__FILE__).dirname.expand_path
 
+# rubocop:disable Style/StringConcatenation
 require ROOT + 'lib/do_sqlite3/version'
+# rubocop:enable Style/StringConcatenation
 
 JRUBY    = RUBY_PLATFORM =~ /java/
 IRONRUBY = defined?(RUBY_ENGINE) && RUBY_ENGINE == 'ironruby'
 WINDOWS  = Gem.win_platform? || (JRUBY && ENV_JAVA['os.name'] =~ /windows/i)
 SUDO     = WINDOWS ? '' : ('sudo' unless ENV['SUDOLESS'])
-BINARY_VERSION = '3071700'
+BINARY_VERSION = '3071700'.freeze
 
 CLEAN.include(%w({tmp,pkg}/ **/*.{o,so,bundle,jar,log,a,gem,dSYM,obj,pdb,exp,DS_Store,rbc,db} ext/do_sqlite3/Makefile ext-java/target))
 

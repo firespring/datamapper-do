@@ -4,7 +4,7 @@ begin
   require 'rake/javaextensiontask'
 
   def gemspec
-    @clean_gemspec ||= Gem::Specification.load(File.expand_path('../do_sqlite3.gemspec', __dir__))
+    @gemspec ||= Gem::Specification.load(File.expand_path('../do_sqlite3.gemspec', __dir__))
   end
 
   unless JRUBY
@@ -49,7 +49,7 @@ begin
   Rake::JavaExtensionTask.new('do_sqlite3', gemspec) do |ext|
     ext.ext_dir   = 'ext-java/src/main/java'
     ext.lib_dir   = "lib/#{gemspec.name}"
-    ext.debug     = ENV.has_key?('DO_JAVA_DEBUG') && ENV.fetch('DO_JAVA_DEBUG', nil)
+    ext.debug     = ENV.key?('DO_JAVA_DEBUG') && ENV.fetch('DO_JAVA_DEBUG', nil)
     ext.classpath = '../do_jdbc/lib/do_jdbc_internal.jar'
     ext.java_compiling do |gem|
       gem.add_dependency 'jdbc-sqlite3', '>=3.5.8'

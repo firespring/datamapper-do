@@ -94,7 +94,7 @@ begin
   # hook into cross compilation vendored sqlite3 dependency
   if RUBY_PLATFORM =~ /mingw|mswin/
     Rake::Task['compile'].prerequisites.unshift 'vendor:sqlite3'
-  elsif Rake::Task.tasks.map { |t| t.name }.include? 'cross'
+  elsif Rake::Task.tasks.map(&:name).include? 'cross'
     Rake::Task['cross'].prerequisites.unshift 'vendor:sqlite3'
   end
 rescue LoadError
