@@ -8,28 +8,27 @@ begin
   # only on Windows or cross platform compilation
   def dlltool(dllname, deffile, libfile)
     # define if we are using GCC or not
-    if Rake::ExtensionCompiler.mingw_gcc_executable then
+    if Rake::ExtensionCompiler.mingw_gcc_executable
       dir = File.dirname(Rake::ExtensionCompiler.mingw_gcc_executable)
       tool = case RUBY_PLATFORM
-        when /mingw/
-          File.join(dir, 'dlltool.exe')
-        when /linux|darwin/
-          File.join(dir, "#{Rake::ExtensionCompiler.mingw_host}-dlltool")
-      end
-      return "#{tool} --dllname #{dllname} --def #{deffile} --output-lib #{libfile}"
+             when /mingw/
+               File.join(dir, 'dlltool.exe')
+             when /linux|darwin/
+               File.join(dir, "#{Rake::ExtensionCompiler.mingw_host}-dlltool")
+             end
+      "#{tool} --dllname #{dllname} --def #{deffile} --output-lib #{libfile}"
     else
-      if RUBY_PLATFORM =~ /mswin/ then
-        tool = 'lib.exe'
-      else
-        fail "Unsupported platform for cross-compilation (please, contribute some patches)."
-      end
-      return "#{tool} /DEF:#{deffile} /OUT:#{libfile}"
+      raise 'Unsupported platform for cross-compilation (please, contribute some patches).' unless RUBY_PLATFORM =~ /mswin/
+
+      tool = 'lib.exe'
+
+      "#{tool} /DEF:#{deffile} /OUT:#{libfile}"
     end
   end
 
   # required folder structure for --with-sqlite3-dir (include + lib)
-  directory "vendor/sqlite3/lib"
-  directory "vendor/sqlite3/include"
+  directory 'vendor/sqlite3/lib'
+  directory 'vendor/sqlite3/include'
 
   # download amalgamation BINARY_VERSION (for include files)
   file "vendor/sqlite-amalgamation-#{BINARY_VERSION}.zip" => ['vendor'] do |t|
@@ -52,7 +51,7 @@ begin
   end
 
   # extract header files into include folder
-  file "vendor/sqlite3/include/sqlite3.h" => ['vendor/sqlite3/include', "vendor/sqlite-amalgamation-#{BINARY_VERSION}.zip"] do |t|
+  file 'vendor/sqlite3/include/sqlite3.h' => ['vendor/sqlite3/include', "vendor/sqlite-amalgamation-#{BINARY_VERSION}.zip"] do |t|
     full_file = File.expand_path(t.prerequisites.last)
     when_writing "creating #{t.name}" do
       cd File.dirname(t.name) do
@@ -64,7 +63,7 @@ begin
   end
 
   # extract dll files into lib folder
-  file "vendor/sqlite3/lib/sqlite3.dll" => ['vendor/sqlite3/lib', "vendor/sqlite-dll-win32-x86-#{BINARY_VERSION}.zip"] do |t|
+  file 'vendor/sqlite3/lib/sqlite3.dll' => ['vendor/sqlite3/lib', "vendor/sqlite-dll-win32-x86-#{BINARY_VERSION}.zip"] do |t|
     full_file = File.expand_path(t.prerequisites.last)
     when_writing "creating #{t.name}" do
       cd File.dirname(t.name) do
@@ -76,7 +75,7 @@ begin
   end
 
   # generate import library from definition and dll file
-  file "vendor/sqlite3/lib/sqlite3.lib" => ["vendor/sqlite3/lib/sqlite3.dll"] do |t|
+  file 'vendor/sqlite3/lib/sqlite3.lib' => ['vendor/sqlite3/lib/sqlite3.dll'] do |t|
     libfile = t.name
     dllname = libfile.ext('dll')
     deffile = libfile.ext('def')
@@ -90,15 +89,13 @@ begin
   CLOBBER.include('vendor')
 
   # vendor:sqlite3
-  task 'vendor:sqlite3' => ["vendor/sqlite3/lib/sqlite3.lib", "vendor/sqlite3/include/sqlite3.h"]
+  task 'vendor:sqlite3' => ['vendor/sqlite3/lib/sqlite3.lib', 'vendor/sqlite3/include/sqlite3.h']
 
   # hook into cross compilation vendored sqlite3 dependency
-  if RUBY_PLATFORM =~ /mingw|mswin/ then
+  if RUBY_PLATFORM =~ /mingw|mswin/
     Rake::Task['compile'].prerequisites.unshift 'vendor:sqlite3'
-  else
-    if Rake::Task.tasks.map {|t| t.name }.include? 'cross'
-      Rake::Task['cross'].prerequisites.unshift 'vendor:sqlite3'
-    end
+  elsif Rake::Task.tasks.map { |t| t.name }.include? 'cross'
+    Rake::Task['cross'].prerequisites.unshift 'vendor:sqlite3'
   end
 rescue LoadError
 end

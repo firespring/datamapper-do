@@ -17,13 +17,12 @@ WINDOWS  = Gem.win_platform? || (JRUBY && ENV_JAVA['os.name'] =~ /windows/i)
 SUDO     = WINDOWS ? '' : ('sudo' unless ENV['SUDOLESS'])
 BINARY_VERSION = '3071700'
 
-CLEAN.include(%w[ {tmp,pkg}/ **/*.{o,so,bundle,jar,log,a,gem,dSYM,obj,pdb,exp,DS_Store,rbc,db} ext/do_sqlite3/Makefile ext-java/target ])
-
+CLEAN.include(%w({tmp,pkg}/ **/*.{o,so,bundle,jar,log,a,gem,dSYM,obj,pdb,exp,DS_Store,rbc,db} ext/do_sqlite3/Makefile ext-java/target))
 
 if JRUBY
   Rake::Task['build'].clear_actions   if Rake::Task.task_defined?('build')
   Rake::Task['install'].clear_actions if Rake::Task.task_defined?('install')
-  task :build => [ :java, :gem ]
+  task build: %i(java gem)
   task :install do
     sh "#{Config::CONFIG['RUBY_INSTALL_NAME']} -S gem install pkg/do_sqlite3-#{DataObjects::Sqlite3::VERSION}-java.gem"
   end

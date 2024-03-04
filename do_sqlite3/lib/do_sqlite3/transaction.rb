@@ -1,10 +1,6 @@
-
 module DataObjects
-
   module Sqlite3
-
     class Transaction < DataObjects::Transaction
-
       def begin_prepared
         raise NotImplementedError
       end
@@ -20,9 +16,6 @@ module DataObjects
       def prepare
         raise NotImplementedError
       end
-
     end
-
   end
-
 end
