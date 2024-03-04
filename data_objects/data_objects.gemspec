@@ -78,23 +78,9 @@ Gem::Specification.new do |s|
   s.homepage = 'http://github.com/datamapper/do'
   s.require_paths = ['lib']
   s.rubyforge_project = 'dorb'
-  s.rubygems_version = '1.6.2'
   s.summary = 'DataObjects basic API and shared driver specifications'
-  s.test_files = [
-    'spec/command_spec.rb',
-    'spec/connection_spec.rb',
-    'spec/do_mock.rb',
-    'spec/do_mock2.rb',
-    'spec/pooling_spec.rb',
-    'spec/reader_spec.rb',
-    'spec/result_spec.rb',
-    'spec/spec_helper.rb',
-    'spec/transaction_spec.rb',
-    'spec/uri_spec.rb'
-  ]
 
   if s.respond_to? :specification_version
-    s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0')
       s.add_runtime_dependency('addressable', ['~> 2.1'])

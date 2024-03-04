@@ -30,7 +30,7 @@ shared_examples_for 'supporting Class' do
       end
 
       it 'should return the correct result' do
-        @values.first.should be_a(String)
+        @values.first.should eq String
       end
     end
   end

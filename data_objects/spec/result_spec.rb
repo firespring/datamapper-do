@@ -11,7 +11,7 @@ describe DataObjects::Result do
   context 'should define a standard API' do
     it 'should provide the number of affected rows' do
       should respond_to(:to_i)
-      subject.to_i.should == 0
+      subject.to_i.should eq 0
     end
 
     it 'should provide the id of the inserted row' do

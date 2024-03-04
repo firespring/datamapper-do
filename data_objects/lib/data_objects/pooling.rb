@@ -1,11 +1,6 @@
-require 'set'
-require 'thread'
-
 module DataObjects
   def self.exiting=(bool)
-    if bool && DataObjects.const_defined?('Pooling') && DataObjects::Pooling.scavenger?
-      DataObjects::Pooling.scavenger.wakeup
-    end
+    DataObjects::Pooling.scavenger.wakeup if bool && DataObjects.const_defined?('Pooling') && DataObjects::Pooling.scavenger?
     @exiting = true
   end
 
@@ -45,7 +40,7 @@ module DataObjects
       unless scavenger?
         @scavenger = Thread.new do
           running = true
-          while running do
+          while running
             # Sleep before we actually start doing anything.
             # Otherwise we might clean up something we just made
             sleep(scavenger_interval)
@@ -64,7 +59,7 @@ module DataObjects
               # It wil be restarted if new resources are added again
               running = false if pools.empty?
             end
-          end # loop
+          end
         end
       end
 
@@ -127,21 +122,19 @@ module DataObjects
     end
 
     def release
-      @__pool.release(self) unless @__pool.nil?
+      @__pool&.release(self)
     end
 
     def detach
-      @__pool.delete(self) unless @__pool.nil?
+      @__pool&.delete(self)
     end
 
     class Pool
       attr_reader :available, :used
 
       def initialize(max_size, resource, args)
-        unless max_size.is_a?(Integer)
-          raise ArgumentError.new("+max_size+ should be an Integer but was #{max_size.inspect}")
-        end
-        raise ArgumentError.new("+resource+ should be a Class but was #{resource.inspect}") unless resource.is_a?(Class)
+        raise ArgumentError, "+max_size+ should be an Integer but was #{max_size.inspect}" unless max_size.is_a?(Integer)
+        raise ArgumentError, "+resource+ should be a Class but was #{resource.inspect}" unless resource.is_a?(Class)
 
         @max_size = max_size
         @resource = resource
@@ -166,15 +159,15 @@ module DataObjects
 
       def new
         instance = nil
-        begin
+        loop do
           lock.synchronize do
-            if @available.size > 0
+            if @available.size.positive?
               instance = @available.pop
               @used[instance.object_id] = instance
             elsif @used.size < @max_size
               instance = @resource.__new(*@args)
-              raise InvalidResourceError.new("#{@resource} constructor created a nil object") if instance.nil?
-              raise InvalidResourceError.new("#{instance} is already part of the pool") if @used.include? instance
+              raise InvalidResourceError, "#{@resource} constructor created a nil object" if instance.nil?
+              raise InvalidResourceError, "#{instance} is already part of the pool" if @used.include? instance
 
               instance.instance_variable_set(:@__pool, self)
               instance.instance_variable_set(:@__allocated_in_pool, Time.now)
@@ -188,7 +181,8 @@ module DataObjects
               wait.wait(lock)
             end
           end
-        end until instance
+          break if instance
+        end
         instance
       end
 
@@ -237,12 +231,12 @@ module DataObjects
             @available.delete(instance)
           end
         end
-        size == 0
+        size.zero?
       end
     end
 
     def self.scavenger_interval
       60
     end
-  end # module Pooling
-end # module DataObjects
+  end
+end

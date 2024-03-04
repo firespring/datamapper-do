@@ -29,7 +29,7 @@ describe DataObjects::Transaction do
       -> { @transaction.close }.should_not raise_error(DataObjects::TransactionError)
     end
   end
-  %i[prepare commit_prepared rollback_prepared].each do |meth|
+  %i(prepare commit_prepared rollback_prepared).each do |meth|
     it "should raise NotImplementedError on #{meth}" do
       -> { @transaction.send(meth) }.should raise_error(NotImplementedError)
     end

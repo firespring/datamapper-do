@@ -17,7 +17,7 @@ module DataObjects
       when :java
         warn 'JNDI URLs (connection strings) are only for use with JRuby' unless RUBY_PLATFORM =~ /java/
 
-        driver   = uri.query.delete('scheme')
+        uri.query.delete('scheme')
         driver   = uri.query.delete('driver')
 
         conn_uri = uri.to_s.gsub(/\?$/, '')
@@ -81,7 +81,7 @@ module DataObjects
         include Quoting
       end
 
-      return unless driver_module_name = target.name.split('::')[-2]
+      return unless (driver_module_name = target.name.split('::')[-2])
 
       driver_module = DataObjects.const_get(driver_module_name)
       driver_module.class_eval <<-EOS, __FILE__, __LINE__ + 1
@@ -108,11 +108,11 @@ module DataObjects
     end
 
     def initialize(_uri) # :nodoc:
-      raise NotImplementedError.new
+      raise NotImplementedError
     end
 
     def dispose # :nodoc:
-      raise NotImplementedError.new
+      raise NotImplementedError
     end
 
     # Create a Command object of the right subclass using the given text
@@ -124,9 +124,7 @@ module DataObjects
       driver_namespace.const_get('Extension').new(self)
     end
 
-    private
-
-    def driver_namespace
+    private def driver_namespace
       DataObjects.const_get(self.class.name.split('::')[-2])
     end
 

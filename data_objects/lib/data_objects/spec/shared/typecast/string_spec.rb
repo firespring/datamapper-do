@@ -78,9 +78,7 @@ shared_examples_for 'supporting String' do
      '歐陽龍'].each do |name|
       before do
         # SQL Server Unicode String Literals
-        if defined?(DataObjects::SqlServer::Connection) && @connection.is_a?(DataObjects::SqlServer::Connection)
-          @n = 'N'
-        end
+        @n = 'N' if defined?(DataObjects::SqlServer::Connection) && @connection.is_a?(DataObjects::SqlServer::Connection)
       end
 
       it 'should write a multibyte String' do
@@ -97,12 +95,12 @@ shared_examples_for 'supporting String' do
       end
 
       it 'should write a multibyte String (without query parameters)' do
-        @command = @connection.create_command("INSERT INTO users (name) VALUES(#{@n}\'#{name}\')")
+        @command = @connection.create_command("INSERT INTO users (name) VALUES(#{@n}'#{name}')")
         expect { @command.execute_non_query }.not_to raise_error(DataObjects::DataError)
       end
 
       it 'should read back the multibyte String (without query parameters)' do
-        @command = @connection.create_command("SELECT name FROM users WHERE name = #{@n}\'#{name}\'")
+        @command = @connection.create_command("SELECT name FROM users WHERE name = #{@n}'#{name}'")
         @reader = @command.execute_reader
         @reader.next!
         @reader.values.first.should eq name
@@ -115,7 +113,7 @@ shared_examples_for 'supporting String' do
 
   describe 'writing a kind of (subclass of) String' do
     before do
-      @reader = @connection.create_command('SELECT id FROM widgets WHERE id = ?').execute_reader(::StringWithExtraPowers.new('2'))
+      @reader = @connection.create_command('SELECT id FROM widgets WHERE id = ?').execute_reader(StringWithExtraPowers.new('2'))
       @reader.next!
       @values = @reader.values
     end

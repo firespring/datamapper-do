@@ -1,3 +1,4 @@
+require 'English'
 require 'socket'
 require 'digest'
 require 'digest/sha2'
@@ -6,8 +7,8 @@ module DataObjects
   class Transaction
     # The local host name. Do not attempt to resolve in DNS to prevent potentially long delay
     HOST = begin
-      "#{Socket.gethostname}"
-    rescue StandardError
+      Socket.gethostname.to_s
+    rescue
       'localhost'
     end
     @@counter = 0
@@ -19,7 +20,7 @@ module DataObjects
 
     # Instantiate the Transaction subclass that's appropriate for this uri scheme
     def self.create_for_uri(uri)
-      uri = uri.is_a?(String) ? URI.parse(uri) : uri
+      uri = URI.parse(uri) if uri.is_a?(String)
       DataObjects.const_get(uri.scheme.capitalize)::Transaction.new(uri)
     end
 
@@ -29,7 +30,7 @@ module DataObjects
     def initialize(uri, connection = nil)
       @connection = connection || DataObjects::Connection.new(uri)
       # PostgreSQL can't handle the full 64 bytes.  This should be enough for everyone.
-      @id = Digest::SHA256.hexdigest("#{HOST}:#{$$}:#{Time.now.to_f}:#{@@counter += 1}")[0..-2]
+      @id = Digest::SHA256.hexdigest("#{HOST}:#{$PROCESS_ID}:#{Time.now.to_f}:#{@@counter += 1}")[0..-2]
     end
 
     # Close the connection for this Transaction
@@ -69,24 +70,20 @@ module DataObjects
       not_implemented
     end
 
-    protected
-
-    def run(cmd)
+    protected def run(cmd)
       connection.create_command(cmd).execute_non_query
     end
 
-    private
-
-    def not_implemented
+    private def not_implemented
       raise NotImplementedError
     end
-  end # class Transaction
+  end
 
   class SavePoint < Transaction
     # We don't bounce through DO::<Adapter/scheme>::SavePoint because there
     # doesn't appear to be any custom SQL to support this.
     def self.create_for_uri(uri, connection)
-      uri = uri.is_a?(String) ? URI.parse(uri) : uri
+      uri = URI.parse(uri) if uri.is_a?(String)
       DataObjects::SavePoint.new(uri, connection)
     end
 
@@ -110,5 +107,5 @@ module DataObjects
     def rollback
       run %(ROLLBACK TO SAVEPOINT "#{@id}")
     end
-  end # class SavePoint
+  end
 end

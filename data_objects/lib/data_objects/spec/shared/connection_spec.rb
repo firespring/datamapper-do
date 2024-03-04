@@ -25,7 +25,9 @@ shared_examples_for 'a Connection' do
   it { @connection.should be_kind_of(DataObjects::Pooling) }
 
   it { @connection.should respond_to(:dispose) }
-  it 'should respond to #create_command' do @connection.should respond_to(:create_command) end
+  it 'should respond to #create_command' do
+    @connection.should respond_to(:create_command)
+  end
 
   describe 'create_command' do
     it 'should be a kind of Command' do
@@ -40,7 +42,7 @@ shared_examples_for 'a Connection' do
         user: @user,
         password: @password,
         host: @host,
-        port: @port && @port.to_i,
+        port: @port&.to_i,
         path: @database
       )
       conn = DataObjects::Connection.new(uri)
@@ -49,7 +51,7 @@ shared_examples_for 'a Connection' do
     end
 
     it 'should work with non-JDBC URLs' do
-      conn = DataObjects::Connection.new("#{CONFIG.uri.sub(/jdbc:/, '')}")
+      conn = DataObjects::Connection.new(CONFIG.uri.sub('jdbc:', '').to_s)
       test_connection(conn).should eq 1
       conn.close
     end
@@ -90,7 +92,7 @@ end
 
 shared_examples_for 'a Connection with authentication support' do
   before :all do
-    %w[@driver @user @password @host @port @database].each do |ivar|
+    %w(@driver @user @password @host @port @database).each do |ivar|
       raise "+#{ivar}+ should be defined in before block" unless instance_variable_get(ivar)
     end
   end
@@ -132,7 +134,7 @@ end
 if defined? JRUBY_VERSION
   shared_examples_for 'a Connection with JDBC URL support' do
     it 'should work with JDBC URLs' do
-      conn = DataObjects::Connection.new(CONFIG.jdbc_uri || "jdbc:#{CONFIG.uri.sub(/jdbc:/, '')}")
+      conn = DataObjects::Connection.new(CONFIG.jdbc_uri || "jdbc:#{CONFIG.uri.sub('jdbc:', '')}")
       test_connection(conn).should eq 1
     end
   end
@@ -210,7 +212,7 @@ shared_examples_for 'a Connection via JDNI' do
         c.should_not be_nil
         test_connection(c).should eq 1
       ensure
-        c.close if c
+        c&.close
       end
     end
   end

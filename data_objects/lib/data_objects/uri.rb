@@ -41,7 +41,7 @@ module DataObjects
         path: uri.path,
         query: uri.query_values,
         fragment: uri.fragment,
-        relative: !!uri.to_s.index('//') # basic (naive) check for relativity / opaqueness
+        relative: !uri.to_s.index('//').nil? # basic (naive) check for relativity / opaqueness
       )
     end
 
@@ -80,10 +80,10 @@ module DataObjects
       string << "#{subscheme}:"  if subscheme
       string << '//'             if relative?
       if user
-        string << "#{user}"
+        string << user.to_s
         string << '@'
       end
-      string << "#{host}"        if host
+      string << host.to_s        if host
       string << ":#{port}"       if port
       string << path.to_s
       if query

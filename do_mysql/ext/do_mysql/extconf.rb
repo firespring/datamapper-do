@@ -46,11 +46,11 @@ elsif with_config('mysql-config', default_mysql_config_path)
   includes = mysql_config('include').split(/\s+/).map do |dir|
     dir.gsub(/^-I/, '')
   end.uniq
-  libs = mysql_config('libs').split(/\s+/).select { |lib| lib =~ /^-L/ }.map do |dir|
+  libs = mysql_config('libs').split(/\s+/).grep(/^-L/).map do |dir|
     dir.gsub(/^-L/, '')
   end.uniq
 
-  linked = mysql_config('libs').split(/\s+/).select { |lib| lib =~ /^-l/ }.map do |dir|
+  linked = mysql_config('libs').split(/\s+/).grep(/^-l/).map do |dir|
     dir.gsub(/^-l/, '')
   end.uniq
 

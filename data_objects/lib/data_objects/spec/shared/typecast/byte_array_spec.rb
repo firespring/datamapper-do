@@ -24,7 +24,7 @@ shared_examples_for 'supporting ByteArray' do
       end
 
       it 'should return the correctly typed result' do
-        @values.first.should be_kind_of(::Extlib::ByteArray)
+        @values.first.should be_kind_of(Extlib::ByteArray)
       end
 
       it 'should return the correct result' do
@@ -35,7 +35,7 @@ shared_examples_for 'supporting ByteArray' do
     describe 'with manual typecasting' do
       before do
         @command = @connection.create_command('SELECT cad_drawing FROM widgets WHERE ad_description = ?')
-        @command.set_types(::Extlib::ByteArray)
+        @command.set_types(Extlib::ByteArray)
         @reader = @command.execute_reader('Buy this product now!')
         @reader.next!
         @values = @reader.values
@@ -46,7 +46,7 @@ shared_examples_for 'supporting ByteArray' do
       end
 
       it 'should return the correctly typed result' do
-        @values.first.should be_kind_of(::Extlib::ByteArray)
+        @values.first.should be_kind_of(Extlib::ByteArray)
       end
 
       it 'should return the correct result' do
@@ -57,7 +57,7 @@ shared_examples_for 'supporting ByteArray' do
 
   describe 'writing a ByteArray' do
     before do
-      @reader = @connection.create_command('SELECT ad_description FROM widgets WHERE cad_drawing = ?').execute_reader(::Extlib::ByteArray.new("CAD \001 \000 DRAWING"))
+      @reader = @connection.create_command('SELECT ad_description FROM widgets WHERE cad_drawing = ?').execute_reader(Extlib::ByteArray.new("CAD \001 \000 DRAWING"))
       @reader.next!
       @values = @reader.values
     end

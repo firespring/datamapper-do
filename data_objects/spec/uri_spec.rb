@@ -12,7 +12,7 @@ describe DataObjects::URI do
     its(:host)      { should eq 'localhost' }
     its(:port)      { should eq 12_345 }
     its(:path)      { should eq '/path' }
-    its(:query)     { should eq({ 'encoding' => 'utf8' }) }
+    its(:query)     { should eq({'encoding' => 'utf8'}) }
     its(:fragment)  { should eq 'fragment' }
 
     it 'should provide a correct string representation' do
@@ -30,7 +30,7 @@ describe DataObjects::URI do
     its(:host)      { should eq 'localhost' }
     its(:port)      { should eq 12_345 }
     its(:path)      { should eq '/path' }
-    its(:query)     { should eq({ 'encoding' => 'utf8' }) }
+    its(:query)     { should eq({'encoding' => 'utf8'}) }
     its(:fragment)  { should eq 'fragment' }
 
     it 'should provide a correct string representation' do

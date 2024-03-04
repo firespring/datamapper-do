@@ -24,7 +24,7 @@ shared_examples_for 'supporting other (unknown) type' do
 
     before do
       @command = @connection.create_command('SELECT ad_description FROM widgets WHERE ad_description = ?')
-      @command.set_types(::CustomTextType)
+      @command.set_types(CustomTextType)
       @reader = @command.execute_reader('Buy this product now!')
       @reader.next!
       @values = @reader.values

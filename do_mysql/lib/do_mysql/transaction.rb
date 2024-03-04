@@ -22,9 +22,7 @@ module DataObjects
         connection.create_command(cmd).execute_non_query
       end
 
-      private
-
-      def finalize_transaction
+      private def finalize_transaction
         cmd = "XA END '#{id}'"
         connection.create_command(cmd).execute_non_query
       end

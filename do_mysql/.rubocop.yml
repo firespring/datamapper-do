@@ -236,6 +236,7 @@ Style/AccessModifierDeclarations:
   EnforcedStyle: inline
 
 Style/Alias:
+  Enabled: false
   EnforcedStyle: prefer_alias_method
 
 Style/ArgumentsForwarding: # new in 1.1
@@ -356,6 +357,9 @@ Style/NumberedParameters: # new in 1.22
 
 Style/NumberedParametersLimit: # new in 1.22
   Enabled: true
+
+Style/NumericPredicate:
+  Enabled: false
 
 Style/ObjectThen: # new in 1.28
   Enabled: true

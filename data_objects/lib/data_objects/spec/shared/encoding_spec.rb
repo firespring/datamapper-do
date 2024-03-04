@@ -38,7 +38,7 @@ shared_examples_for 'a driver supporting different encodings' do
 end
 
 shared_examples_for 'returning correctly encoded strings for the default database encoding' do
-  if defined?(::Encoding)
+  if defined?(Encoding)
 
     before :all do
       setup_test_environment
@@ -86,7 +86,7 @@ shared_examples_for 'returning correctly encoded strings for the default databas
         end
 
         it 'should return ASCII-8BIT encoded ByteArray' do
-          @values.first.should be_kind_of(::Extlib::ByteArray)
+          @values.first.should be_kind_of(Extlib::ByteArray)
           @values.first.encoding.name.should eq 'ASCII-8BIT'
         end
       end
@@ -95,7 +95,7 @@ shared_examples_for 'returning correctly encoded strings for the default databas
 end
 
 shared_examples_for 'returning correctly encoded strings for the default internal encoding' do
-  if defined?(::Encoding)
+  if defined?(Encoding)
 
     before :all do
       setup_test_environment
@@ -146,7 +146,7 @@ shared_examples_for 'returning correctly encoded strings for the default interna
         end
 
         it 'should return ASCII-8BIT encoded ByteArray' do
-          @values.first.should be_kind_of(::Extlib::ByteArray)
+          @values.first.should be_kind_of(Extlib::ByteArray)
           @values.first.encoding.name.should eq 'ASCII-8BIT'
         end
       end

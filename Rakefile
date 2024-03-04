@@ -13,12 +13,12 @@ SUDO     = WINDOWS ? '' : ('sudo' unless ENV['SUDOLESS'])
 RUN_RCOV = if JRUBY || IRONRUBY
              false
            else
-             (ENV.has_key?('NO_RCOV') ? ENV['NO_RCOV'] != 'true' : true)
+             (ENV.key?('NO_RCOV') ? ENV['NO_RCOV'] != 'true' : true)
            end
 
-jruby_projects = %w[do_jdbc do_derby do_h2 do_hsqldb do_openedge]
-projects = %w[data_objects]
-projects += %w[do_mysql do_postgres do_sqlite3 do_sqlserver do_oracle]
+jruby_projects = %w(do_jdbc do_derby do_h2 do_hsqldb do_openedge)
+projects = %w(data_objects)
+projects += %w(do_mysql do_postgres do_sqlite3 do_sqlserver do_oracle)
 projects += jruby_projects if JRUBY
 
 def rake(cmd)
@@ -52,9 +52,9 @@ task :spec do
     `#{command}`
   end
 
-  spec_projects = %w[data_objects do_mysql do_postgres do_sqlite3]
+  spec_projects = %w(data_objects do_mysql do_postgres do_sqlite3)
   if JRUBY
-    spec_projects += %w[do_derby do_h2 do_hsqldb]
+    spec_projects += %w(do_derby do_h2 do_hsqldb)
     Dir.chdir('do_jdbc') { rake :compile }
   end
 
@@ -65,8 +65,8 @@ end
 
 desc 'Bump version numbers, needs OLD and NEW environment variables'
 task :bump do
-  old_version = ENV['OLD']
-  new_version = ENV['NEW']
+  old_version = ENV.fetch('OLD', nil)
+  new_version = ENV.fetch('NEW', nil)
 
   raise 'Specify versions when bumping: OLD=x.y.z NEW=x.y.z+1 rake bump' unless old_version && new_version
 

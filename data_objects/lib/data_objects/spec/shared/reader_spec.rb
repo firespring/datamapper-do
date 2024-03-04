@@ -21,13 +21,13 @@ shared_examples_for 'a Reader' do
     it 'should return the correct fields in the reader' do
       # we downcase the field names as some drivers such as do_derby, do_h2,
       # do_hsqldb, do_oracle return the field names as uppercase
-      @reader.fields.should be_array_case_insensitively_equal_to(%w[code name])
+      @reader.fields.should be_array_case_insensitively_equal_to(%w(code name))
     end
 
     it 'should return the field alias as the name, when the SQL AS keyword is specified' do
       reader = @connection.create_command('SELECT code AS codigo, name AS nombre FROM widgets WHERE ad_description = ? order by id').execute_reader('Buy this product now!')
-      reader.fields.should_not be_array_case_insensitively_equal_to(%w[code name])
-      reader.fields.should     be_array_case_insensitively_equal_to(%w[codigo nombre])
+      reader.fields.should_not be_array_case_insensitively_equal_to(%w(code name))
+      reader.fields.should     be_array_case_insensitively_equal_to(%w(codigo nombre))
       reader.close
     end
   end
@@ -108,9 +108,9 @@ shared_examples_for 'a Reader' do
       end
 
       it 'should move the cursor to the next value' do
-        @reader.values.should eq ["W0000001", "Widget 1"]
-        lambda { @reader.next! }.should change { @reader.values }
-        @reader.values.should eq ["W0000002", "Widget 2"]
+        @reader.values.should eq ['W0000001', 'Widget 1']
+        -> { @reader.next! }.should(change { @reader.values })
+        @reader.values.should eq ['W0000002', 'Widget 2']
       end
     end
 

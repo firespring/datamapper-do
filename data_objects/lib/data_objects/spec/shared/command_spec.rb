@@ -189,7 +189,7 @@ shared_examples_for 'a Command with async' do
             reader.next!
             reader.close
           else
-            result = command.execute_non_query
+            command.execute_non_query
           end
         ensure
           # Always make sure the connection gets released back into the pool.
@@ -197,7 +197,7 @@ shared_examples_for 'a Command with async' do
         end
       end
 
-      threads.each { |t| t.join }
+      threads.each(&:join)
       @finish = Time.now
     end
 

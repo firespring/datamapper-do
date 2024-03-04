@@ -3,11 +3,13 @@ require 'data_objects'
 require 'rspec'
 require 'rspec/its'
 
-module DataObjects::Pooling
-  class << self
-    remove_method :scavenger_interval if instance_methods(false).any? { |m| m.to_sym == :scavenger_interval }
-    def scavenger_interval
-      0.5
+module DataObjects
+  module Pooling
+    class << self
+      remove_method :scavenger_interval if instance_methods(false).any? { |m| m.to_sym == :scavenger_interval }
+      def scavenger_interval
+        0.5
+      end
     end
   end
 end
