@@ -77,7 +77,7 @@ Gem::Specification.new do |s|
     "tasks/yard.rake",
     "tasks/yardstick.rake"
   ]
-  s.homepage = %q{http://github.com/datamapper/do}
+  s.homepage = %q{http://github.com/firespring/datamapper-do}
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{dorb}
   s.rubygems_version = %q{1.6.2}

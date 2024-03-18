@@ -50,7 +50,7 @@ To compile and install from source:
  * Install this driver with `jruby -S rake install`.
 
 For more information, see the H2 driver wiki page:
-<http://wiki.github.com/datamapper/do/h2>.
+<http://wiki.github.com/firespring/datamapper-do/h2>.
 
 ## Developers
 
@@ -59,7 +59,7 @@ Follow the above installation instructions. Additionally, you'll need:
   * `YARD` gem for generating documentation.
 
 See the DataObjects wiki for more comprehensive information:
-<http://wiki.github.com/datamapper/do/jruby>.
+<http://wiki.github.com/firespring/datamapper-do/jruby>.
 
 To run specs:
 
