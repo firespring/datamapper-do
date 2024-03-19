@@ -1,11 +1,6 @@
 module DataObjects
   class SQLError < Error
-
-    attr_reader :message
-    attr_reader :code
-    attr_reader :sqlstate
-    attr_reader :query
-    attr_reader :uri
+    attr_reader :message, :code, :sqlstate, :query, :uri
 
     def initialize(message, code = nil, sqlstate = nil, query = nil, uri = nil)
       @message = message

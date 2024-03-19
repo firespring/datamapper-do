@@ -6,19 +6,18 @@ end
 module DataObjects
   # An abstract connection to a DataObjects resource. The physical connection may be broken and re-established from time to time.
   class Connection
-
     include Logging
 
     # Make a connection to the database using the DataObjects::URI given.
     # Note that the physical connection may be delayed until the first command is issued, so success here doesn't necessarily mean you can connect.
     def self.new(uri_s)
-      uri = DataObjects::URI::parse(uri_s)
+      uri = DataObjects::URI.parse(uri_s)
 
       case uri.scheme.to_sym
       when :java
         warn 'JNDI URLs (connection strings) are only for use with JRuby' unless RUBY_PLATFORM =~ /java/
 
-        driver   = uri.query.delete('scheme')
+        uri.query.delete('scheme')
         driver   = uri.query.delete('driver')
 
         conn_uri = uri.to_s.gsub(/\?$/, '')
@@ -27,19 +26,19 @@ module DataObjects
 
         path = uri.subscheme
         driver = if path.split(':').first == 'sqlite'
-          'sqlite3'
-        elsif path.split(':').first == 'postgresql'
-          'postgres'
-        else
-          path.split(':').first
-        end
+                   'sqlite3'
+                 elsif path.split(':').first == 'postgresql'
+                   'postgres'
+                 else
+                   path.split(':').first
+                 end
 
         conn_uri = uri_s # NOTE: for now, do not reformat this JDBC connection
-                         # string -- or, in other words, do not let
-                         # DataObjects::URI#to_s be called -- as it is not
-                         # correctly handling JDBC URLs, and in doing so, causing
-                         # java.sql.DriverManager.getConnection to throw a
-                         # 'No suitable driver found for...' exception.
+      # string -- or, in other words, do not let
+      # DataObjects::URI#to_s be called -- as it is not
+      # correctly handling JDBC URLs, and in doing so, causing
+      # java.sql.DriverManager.getConnection to throw a
+      # 'No suitable driver found for...' exception.
       else
         driver   = uri.scheme
         conn_uri = uri
@@ -47,21 +46,21 @@ module DataObjects
 
       # Exceptions to how a driver class is determined for a given URI
       driver_class = if driver == 'sqlserver'
-        'SqlServer'
-      else
-        driver.capitalize
-      end
+                       'SqlServer'
+                     else
+                       driver.capitalize
+                     end
 
       clazz = DataObjects.const_get(driver_class)::Connection
       unless clazz.method_defined? :close
-        if (uri.scheme.to_sym == :java)
+        if uri.scheme.to_sym == :java
           clazz.class_eval do
-            alias close dispose
+            alias_method :close, :dispose
           end
         else
           clazz.class_eval do
             include Pooling
-            alias close release
+            alias_method :close, :release
           end
         end
       end
@@ -72,7 +71,6 @@ module DataObjects
     # See also DataObjects::Pooling and DataObjects::Logger
     def self.inherited(target)
       target.class_eval do
-
         # Allocate a Connection object from the pool, creating one if necessary. This method is active in Connection subclasses only.
         def self.new(*args)
           instance = allocate
@@ -83,9 +81,10 @@ module DataObjects
         include Quoting
       end
 
-      if driver_module_name = target.name.split('::')[-2]
-        driver_module = DataObjects::const_get(driver_module_name)
-        driver_module.class_eval <<-EOS, __FILE__, __LINE__
+      return unless (driver_module_name = target.name.split('::')[-2])
+
+      driver_module = DataObjects.const_get(driver_module_name)
+      driver_module.class_eval <<-EOS, __FILE__, __LINE__ + 1
           def self.logger
             @logger
           end
@@ -93,10 +92,9 @@ module DataObjects
           def self.logger=(logger)
             @logger = logger
           end
-        EOS
+      EOS
 
-        driver_module.logger = DataObjects::Logger.new(nil, :off)
-      end
+      driver_module.logger = DataObjects::Logger.new(nil, :off)
     end
 
     #####################################################
@@ -109,12 +107,12 @@ module DataObjects
       @uri.to_s
     end
 
-    def initialize(uri) #:nodoc:
-      raise NotImplementedError.new
+    def initialize(_uri) # :nodoc:
+      raise NotImplementedError
     end
 
-    def dispose #:nodoc:
-      raise NotImplementedError.new
+    def dispose # :nodoc:
+      raise NotImplementedError
     end
 
     # Create a Command object of the right subclass using the given text
@@ -126,16 +124,12 @@ module DataObjects
       driver_namespace.const_get('Extension').new(self)
     end
 
-    private
-
-    def driver_namespace
-      DataObjects::const_get(self.class.name.split('::')[-2])
+    private def driver_namespace
+      DataObjects.const_get(self.class.name.split('::')[-2])
     end
 
     def self.concrete_command
-      @concrete_command ||= DataObjects::const_get(self.name.split('::')[-2]).const_get('Command')
+      @concrete_command ||= DataObjects.const_get(name.split('::')[-2]).const_get('Command')
     end
-
   end
-
 end

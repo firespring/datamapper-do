@@ -2,7 +2,6 @@ require 'pathname'
 require 'cgi'
 
 module SSLHelpers
-
   CERTS_DIR = Pathname(__FILE__).dirname.join('ssl_certs').to_s
 
   CONFIG = OpenStruct.new
@@ -15,7 +14,6 @@ module SSLHelpers
   CONFIG.cipher      = 'AES128-SHA'
 
   def self.query(*keys)
-    keys.map { |key| "ssl[#{key}]=#{CGI::escape(CONFIG.send(key))}" }.join('&')
+    keys.map { |key| "ssl[#{key}]=#{CGI.escape(CONFIG.send(key))}" }.join('&')
   end
-
 end

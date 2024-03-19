@@ -1,9 +1,8 @@
 require File.expand_path(File.join(File.dirname(__FILE__), 'spec_helper'))
 require 'timeout'
 
-describe "DataObjects::Pooling" do
+describe 'DataObjects::Pooling' do
   before do
-
     Object.send(:remove_const, :Person) if defined?(Person)
     class ::Person
       include DataObjects::Pooling
@@ -21,7 +20,6 @@ describe "DataObjects::Pooling" do
 
     Object.send(:remove_const, :Overwriter) if defined?(Overwriter)
     class ::Overwriter
-
       def self.new(*args)
         instance = allocate
         instance.send(:initialize, *args)
@@ -42,19 +40,16 @@ describe "DataObjects::Pooling" do
         @overwritten
       end
 
-      def overwritten=(value)
-        @overwritten = value
-      end
+      attr_writer :overwritten
 
       class << self
         remove_method :pool_size if instance_methods(false).any? { |m| m.to_sym == :pool_size }
         def pool_size
-          pool_size = if RUBY_PLATFORM =~ /java/
+          if RUBY_PLATFORM =~ /java/
             20
           else
             2
           end
-          pool_size
         end
       end
 
@@ -74,33 +69,33 @@ describe "DataObjects::Pooling" do
     end
   end
 
-  it "should maintain a size of 1" do
+  it 'maintains a size of 1' do
     bob = Person.new('Bob')
     fred = Person.new('Fred')
     ted = Person.new('Ted')
 
-    Person.__pools.each do |args, pool|
-      pool.size.should == 1
+    Person.__pools.each_value do |pool|
+      pool.size.should eq 1
     end
 
     bob.release
     fred.release
     ted.release
 
-    Person.__pools.each do |args, pool|
-      pool.size.should == 1
+    Person.__pools.each_value do |pool|
+      pool.size.should eq 1
     end
   end
 
-  it "should track the initialized pools" do
+  it 'tracks the initialized pools' do
     bob = Person.new('Bob') # Ensure the pool is "primed"
-    bob.name.should == 'Bob'
+    bob.name.should eq 'Bob'
     bob.instance_variable_get(:@__pool).should_not be_nil
-    Person.__pools.size.should == 1
+    Person.__pools.size.should eq 1
     bob.release
-    Person.__pools.size.should == 1
+    Person.__pools.size.should eq 1
 
-    DataObjects::Pooling::pools.should_not be_empty
+    DataObjects::Pooling.pools.should_not be_empty
 
     sleep(1.2)
 
@@ -110,13 +105,13 @@ describe "DataObjects::Pooling" do
     bob.name.should be_nil
   end
 
-  it "should allow you to overwrite Class#new" do
+  it 'allows you to overwrite Class#new' do
     bob = Overwriter.new('Bob')
     bob.should be_overwritten
     bob.release
   end
 
-  it "should allow multiple threads to access the pool" do
+  it 'allows multiple threads to access the pool' do
     t1 = Thread.new do
       bob = Person.new('Bob')
       sleep(1)
@@ -130,33 +125,32 @@ describe "DataObjects::Pooling" do
     end.should_not raise_error(DataObjects::Pooling::InvalidResourceError)
   end
 
-  it "should allow you to flush a pool" do
+  it 'allows you to flush a pool' do
     bob = Overwriter.new('Bob')
     Overwriter.new('Bob').release
     bob.release
 
-    bob.name.should == 'Bob'
+    bob.name.should eq 'Bob'
 
-    Overwriter.__pools[['Bob']].size.should == 2
+    Overwriter.__pools[['Bob']].size.should eq 2
     Overwriter.__pools[['Bob']].flush!
-    Overwriter.__pools[['Bob']].size.should == 0
+    Overwriter.__pools[['Bob']].size.should eq 0
 
     bob.name.should be_nil
   end
 
-  it "should wake up the scavenger thread when exiting" do
+  it 'wakes up the scavenger thread when exiting' do
     bob = Person.new('Bob')
     bob.release
     DataObjects.exiting = true
     sleep(1)
-    DataObjects::Pooling.scavenger?.should be_false
+    DataObjects::Pooling.scavenger?.should be false
   end
 
-  it "should be able to detach an instance from the pool" do
+  it 'detaches an instance from the pool' do
     bob = Person.new('Bob')
-    Person.__pools[['Bob']].size.should == 1
+    Person.__pools[['Bob']].size.should eq 1
     bob.detach
-    Person.__pools[['Bob']].size.should == 0
+    Person.__pools[['Bob']].size.should eq 0
   end
-
 end

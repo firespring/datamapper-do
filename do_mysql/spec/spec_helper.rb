@@ -1,19 +1,22 @@
-$TESTING=true
+# rubocop:disable Style/GlobalVars
+$TESTING = true
+# rubocop:enable Style/GlobalVars
 JRUBY = RUBY_PLATFORM =~ /java/
 
 require 'rubygems'
 require 'rspec'
+require 'rspec/its'
 require 'date'
 require 'ostruct'
 require 'fileutils'
 require 'win32console' if RUBY_PLATFORM =~ /mingw|mswin/
 
-driver_lib = File.expand_path('../../lib', __FILE__)
+driver_lib = File.expand_path('../lib', __dir__)
 $LOAD_PATH.unshift(driver_lib) unless $LOAD_PATH.include?(driver_lib)
 
 # Prepend data_objects/do_jdbc in the repository to the load path.
 # DO NOT USE installed gems, except when running the specs from gem.
-repo_root = File.expand_path('../../..', __FILE__)
+repo_root = File.expand_path('../..', __dir__)
 (['data_objects'] << ('do_jdbc' if JRUBY)).compact.each do |lib|
   lib_path = "#{repo_root}/#{lib}/lib"
   $LOAD_PATH.unshift(lib_path) if File.directory?(lib_path) && !$LOAD_PATH.include?(lib_path)
@@ -25,32 +28,36 @@ require 'data_objects/spec/lib/ssl'
 require 'data_objects/spec/lib/pending_helpers'
 require 'do_mysql'
 
-DataObjects::Mysql.logger = DataObjects::Logger.new(STDOUT, :off)
+DataObjects::Mysql.logger = DataObjects::Logger.new($stdout, :off)
 at_exit { DataObjects.logger.flush }
-
 
 CONFIG = OpenStruct.new
 CONFIG.scheme   = 'mysql'
 CONFIG.user     = ENV['DO_MYSQL_USER'] || 'root'
 CONFIG.pass     = ENV['DO_MYSQL_PASS'] || ''
-CONFIG.user_info = unless CONFIG.user == 'root' && CONFIG.pass.empty?
-  "#{CONFIG.user}:#{CONFIG.pass}@"
-else
-  ''
-end
+CONFIG.user_info = if CONFIG.user == 'root' && CONFIG.pass.empty?
+                     ''
+                   else
+                     "#{CONFIG.user}:#{CONFIG.pass}@"
+                   end
 CONFIG.host     = ENV['DO_MYSQL_HOST'] || 'localhost'
 CONFIG.port     = ENV['DO_MYSQL_PORT'] || '3306'
 CONFIG.database = ENV['DO_MYSQL_DATABASE'] || '/do_test'
 CONFIG.ssl      = SSLHelpers.query(:ca_cert, :client_cert, :client_key)
 
 CONFIG.driver       = 'mysql'
-CONFIG.jdbc_driver  = DataObjects::Mysql.const_get('JDBC_DRIVER') rescue nil
-CONFIG.uri          = ENV["DO_MYSQL_SPEC_URI"] || "#{CONFIG.scheme}://#{CONFIG.user_info}#{CONFIG.host}:#{CONFIG.port}#{CONFIG.database}?zeroDateTimeBehavior=convertToNull"
+CONFIG.jdbc_driver  = begin
+  DataObjects::Mysql.const_get('JDBC_DRIVER')
+rescue
+  nil
+end
+CONFIG.uri          = ENV['DO_MYSQL_SPEC_URI'] ||
+                      "#{CONFIG.scheme}://#{CONFIG.user_info}#{CONFIG.host}:#{CONFIG.port}#{CONFIG.database}?zeroDateTimeBehavior=convertToNull"
 CONFIG.jdbc_uri     = "jdbc:#{CONFIG.uri}"
-CONFIG.sleep        = "SELECT sleep(1)"
+CONFIG.sleep        = 'SELECT sleep(1)'
 
 module DataObjectsSpecHelpers
-
+  # rubocop:disable Metrics/MethodLength
   def setup_test_environment
     conn = DataObjects::Connection.new(CONFIG.uri)
 
@@ -135,7 +142,7 @@ module DataObjectsSpecHelpers
 
     1.upto(16) do |n|
       conn.create_command(<<-EOF).execute_non_query
-        insert into widgets(code, name, shelf_location, description, image_data, ad_description, ad_image, whitepaper_text, cad_drawing, super_number, weight) VALUES ('W#{n.to_s.rjust(7,"0")}', 'Widget #{n}', 'A14', 'This is a description', 'IMAGE DATA', 'Buy this product now!', 'AD IMAGE DATA', 'String', 'CAD \001 \000 DRAWING', 1234, 13.4);
+        insert into widgets(code, name, shelf_location, description, image_data, ad_description, ad_image, whitepaper_text, cad_drawing, super_number, weight) VALUES ('W#{n.to_s.rjust(7, '0')}', 'Widget #{n}', 'A14', 'This is a description', 'IMAGE DATA', 'Buy this product now!', 'AD IMAGE DATA', 'String', 'CAD \001 \000 DRAWING', 1234, 13.4);
       EOF
     end
 
@@ -176,8 +183,8 @@ module DataObjectsSpecHelpers
     EOF
 
     conn.close
-
   end
+  # rubocop:enable Metrics/MethodLength
 
   def self.test_environment_ssl_config
     ssl_config = SSLHelpers::CONFIG
@@ -204,7 +211,7 @@ module DataObjectsSpecHelpers
     EOF
 
     ssl_config = SSLHelpers::CONFIG
-    current_config = { }
+    current_config = {}
 
     while ssl_variables.next!
       variable, value = ssl_variables.values
@@ -213,39 +220,28 @@ module DataObjectsSpecHelpers
 
     errors = []
 
-    if current_config[:have_ssl] == 'NO'
-      errors << "SSL was not compiled"
-    end
+    errors << 'SSL was not compiled' if current_config[:have_ssl] == 'NO'
 
-    if current_config[:have_ssl] == 'DISABLED'
-      errors << "SSL was not enabled"
-    end
+    errors << 'SSL was not enabled' if current_config[:have_ssl] == 'DISABLED'
 
-    if current_config[:ssl_ca] != ssl_config.ca_cert
-      errors << "The CA certificate is not configured (it was set to '#{current_config[:ssl_ca]}')"
-    end
+    errors << "The CA certificate is not configured (it was set to '#{current_config[:ssl_ca]}')" if current_config[:ssl_ca] != ssl_config.ca_cert
 
     if current_config[:ssl_cert] != ssl_config.server_cert
       errors << "The server certificate is not configured (it was set to '#{current_config[:ssl_cert]}')"
     end
 
-    if current_config[:ssl_key] != ssl_config.server_key
-      errors << "The server key is not configured, (it was set to '#{current_config[:ssl_key]}')"
-    end
+    errors << "The server key is not configured, (it was set to '#{current_config[:ssl_key]}')" if current_config[:ssl_key] != ssl_config.server_key
 
-    if current_config[:ssl_cipher] != ssl_config.cipher
-      errors << "The cipher is not configured, (it was set to '#{current_config[:ssl_cipher]}')"
-    end
+    errors << "The cipher is not configured, (it was set to '#{current_config[:ssl_cipher]}')" if current_config[:ssl_cipher] != ssl_config.cipher
 
     errors
   ensure
-    conn.close if conn
+    conn&.close
   end
 
   def self.test_environment_supports_ssl?
     test_environment_ssl_config_errors.empty?
   end
-
 end
 
 RSpec.configure do |config|

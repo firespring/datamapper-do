@@ -1,4 +1,4 @@
-$TESTING=true
+$TESTING = true
 JRUBY = RUBY_PLATFORM =~ /java/
 
 require 'rubygems'
@@ -8,12 +8,12 @@ require 'ostruct'
 require 'fileutils'
 require 'win32console' if RUBY_PLATFORM =~ /mingw|mswin/
 
-driver_lib = File.expand_path('../../lib', __FILE__)
+driver_lib = File.expand_path('../lib', __dir__)
 $LOAD_PATH.unshift(driver_lib) unless $LOAD_PATH.include?(driver_lib)
 
 # Prepend data_objects/do_jdbc in the repository to the load path.
 # DO NOT USE installed gems, except when running the specs from gem.
-repo_root = File.expand_path('../../..', __FILE__)
+repo_root = File.expand_path('../..', __dir__)
 (['data_objects'] << ('do_jdbc' if JRUBY)).compact.each do |lib|
   lib_path = "#{repo_root}/#{lib}/lib"
   $LOAD_PATH.unshift(lib_path) if File.directory?(lib_path) && !$LOAD_PATH.include?(lib_path)
@@ -24,17 +24,19 @@ require 'data_objects/spec/setup'
 require 'data_objects/spec/lib/pending_helpers'
 require 'do_sqlite3'
 
-
 CONFIG              = OpenStruct.new
 CONFIG.scheme       = 'sqlite3'
-CONFIG.database     = ENV['DO_SQLITE3_DATABASE'] || ":memory:"
-CONFIG.uri          = ENV["DO_SQLITE3_SPEC_URI"] || "#{CONFIG.scheme}:#{CONFIG.database}"
+CONFIG.database     = ENV['DO_SQLITE3_DATABASE'] || ':memory:'
+CONFIG.uri          = ENV['DO_SQLITE3_SPEC_URI'] || "#{CONFIG.scheme}:#{CONFIG.database}"
 CONFIG.driver       = 'sqlite3'
-CONFIG.jdbc_driver  = DataObjects::Sqlite3.const_get('JDBC_DRIVER') rescue nil
-CONFIG.jdbc_uri     = CONFIG.uri.sub(/sqlite3/,"jdbc:sqlite")
+CONFIG.jdbc_driver  = begin
+  DataObjects::Sqlite3.const_get('JDBC_DRIVER')
+rescue
+  nil
+end
+CONFIG.jdbc_uri = CONFIG.uri.sub('sqlite3', 'jdbc:sqlite')
 
 module DataObjectsSpecHelpers
-
   def setup_test_environment
     conn = DataObjects::Connection.new(CONFIG.uri)
 
@@ -66,8 +68,8 @@ module DataObjectsSpecHelpers
       );
     EOF
 
-    local_offset = Rational(Time.local(2008, 2, 14).utc_offset, 86400)
-    t = DateTime.civil(2008, 2, 14, 00, 31, 12, local_offset)
+    local_offset = Rational(Time.local(2008, 2, 14).utc_offset, 86_400)
+    t = DateTime.civil(2008, 2, 14, 0o0, 31, 12, local_offset)
     conn.create_command(<<-EOF).execute_non_query
       CREATE TABLE "widgets" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -88,14 +90,14 @@ module DataObjectsSpecHelpers
         "cost1" double precision default 10.23,
         "cost2" decimal(8,2) default 50.23,
         "release_date" date default '2008-02-14',
-        "release_datetime" timestamp default '#{t.to_s}',
+        "release_datetime" timestamp default '#{t}',
         "release_timestamp" timestamp with time zone default '2008-02-14 00:31:31'
       );
     EOF
 
     1.upto(16) do |n|
       conn.create_command(<<-EOF).execute_non_query
-        insert into widgets(code, name, shelf_location, description, image_data, ad_description, ad_image, whitepaper_text, cad_drawing, super_number, weight) VALUES ('W#{n.to_s.rjust(7,"0")}', 'Widget #{n}', 'A14', 'This is a description', 'IMAGE DATA', 'Buy this product now!', 'AD IMAGE DATA', 'String', X'434144200120002044524157494e47', 1234, 13.4);
+        insert into widgets(code, name, shelf_location, description, image_data, ad_description, ad_image, whitepaper_text, cad_drawing, super_number, weight) VALUES ('W#{n.to_s.rjust(7, '0')}', 'Widget #{n}', 'A14', 'This is a description', 'IMAGE DATA', 'Buy this product now!', 'AD IMAGE DATA', 'String', X'434144200120002044524157494e47', 1234, 13.4);
       EOF
     end
 
@@ -137,7 +139,6 @@ module DataObjectsSpecHelpers
 
     conn.close
   end
-
 end
 
 RSpec.configure do |config|

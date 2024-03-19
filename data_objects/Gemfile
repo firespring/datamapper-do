@@ -1,7 +1,9 @@
-source :rubygems
+source 'https://rubygems.org'
 
 gemspec
 
 group :development do # Development dependencies (as in the gemspec)
   gem 'rake'
+  gem 'rspec', '~> 2.5'
+  gem 'yard', '~> 0.5'
 end

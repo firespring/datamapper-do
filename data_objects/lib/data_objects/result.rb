@@ -8,7 +8,9 @@ module DataObjects
 
     # Create a new Result. Used internally in the adapters.
     def initialize(command, affected_rows, insert_id = nil)
-      @command, @affected_rows, @insert_id = command, affected_rows, insert_id
+      @command = command
+      @affected_rows = affected_rows
+      @insert_id = insert_id
     end
 
     # Return the number of affected rows

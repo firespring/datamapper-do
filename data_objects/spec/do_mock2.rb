@@ -1,5 +1,4 @@
 module DataObjects
-
   module Mock2
     class Connection < DataObjects::Connection
       def initialize(uri)
@@ -12,11 +11,11 @@ module DataObjects
     end
 
     class Command < DataObjects::Command
-      def execute_non_query(*args)
+      def execute_non_query(*_args)
         Result.new(self, 0, nil)
       end
 
-      def execute_reader(*args)
+      def execute_reader(*_args)
         Reader.new
       end
     end
@@ -27,5 +26,4 @@ module DataObjects
     class Reader < DataObjects::Reader
     end
   end
-
 end

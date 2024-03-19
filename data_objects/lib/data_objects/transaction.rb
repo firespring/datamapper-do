@@ -1,13 +1,16 @@
+require 'English'
 require 'socket'
 require 'digest'
 require 'digest/sha2'
 
 module DataObjects
-
   class Transaction
-
     # The local host name. Do not attempt to resolve in DNS to prevent potentially long delay
-    HOST = "#{Socket::gethostname}" rescue "localhost"
+    HOST = begin
+      Socket.gethostname.to_s
+    rescue
+      'localhost'
+    end
     @@counter = 0
 
     # The connection object allocated for this transaction
@@ -17,7 +20,7 @@ module DataObjects
 
     # Instantiate the Transaction subclass that's appropriate for this uri scheme
     def self.create_for_uri(uri)
-      uri = uri.is_a?(String) ? URI::parse(uri) : uri
+      uri = URI.parse(uri) if uri.is_a?(String)
       DataObjects.const_get(uri.scheme.capitalize)::Transaction.new(uri)
     end
 
@@ -27,7 +30,7 @@ module DataObjects
     def initialize(uri, connection = nil)
       @connection = connection || DataObjects::Connection.new(uri)
       # PostgreSQL can't handle the full 64 bytes.  This should be enough for everyone.
-      @id = Digest::SHA256.hexdigest("#{HOST}:#{$$}:#{Time.now.to_f}:#{@@counter += 1}")[0..-2]
+      @id = Digest::SHA256.hexdigest("#{HOST}:#{$PROCESS_ID}:#{Time.now.to_f}:#{@@counter += 1}")[0..-2]
     end
 
     # Close the connection for this Transaction
@@ -36,39 +39,51 @@ module DataObjects
     end
 
     def begin
-      run "BEGIN"
+      run 'BEGIN'
     end
 
     def commit
-      run "COMMIT"
+      run 'COMMIT'
     end
 
     def rollback
-      run "ROLLBACK"
+      run 'ROLLBACK'
     end
 
-    def prepare; not_implemented; end;
-    def begin_prepared; not_implemented; end;
-    def commit_prepared; not_implemented; end;
-    def rollback_prepared; not_implemented; end;
-    def prepare; not_implemented; end;
+    def prepare
+      not_implemented
+    end
 
-  protected
-    def run(cmd)
+    def begin_prepared
+      not_implemented
+    end
+
+    def commit_prepared
+      not_implemented
+    end
+
+    def rollback_prepared
+      not_implemented
+    end
+
+    def prepare
+      not_implemented
+    end
+
+    protected def run(cmd)
       connection.create_command(cmd).execute_non_query
     end
 
-  private
-    def not_implemented
+    private def not_implemented
       raise NotImplementedError
     end
-  end # class Transaction
+  end
 
   class SavePoint < Transaction
     # We don't bounce through DO::<Adapter/scheme>::SavePoint because there
     # doesn't appear to be any custom SQL to support this.
     def self.create_for_uri(uri, connection)
-      uri = uri.is_a?(String) ? URI::parse(uri) : uri
+      uri = URI.parse(uri) if uri.is_a?(String)
       DataObjects::SavePoint.new(uri, connection)
     end
 
@@ -78,20 +93,19 @@ module DataObjects
     # calling DO::Connection#close will release the connection back into the
     # pool (before the top-level Transaction might be done with it).
     def close
-        # no-op
+      # no-op
     end
 
     def begin
-      run %{SAVEPOINT "#{@id}"}
+      run %(SAVEPOINT "#{@id}")
     end
 
     def commit
-      run %{RELEASE SAVEPOINT "#{@id}"}
+      run %(RELEASE SAVEPOINT "#{@id}")
     end
 
     def rollback
-      run %{ROLLBACK TO SAVEPOINT "#{@id}"}
+      run %(ROLLBACK TO SAVEPOINT "#{@id}")
     end
-  end # class SavePoint
-
+  end
 end

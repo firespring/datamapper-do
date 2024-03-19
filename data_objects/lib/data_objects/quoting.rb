@@ -1,30 +1,27 @@
 module DataObjects
-
   module Quoting
-
     # Quote a value of any of the recognised data types
     def quote_value(value)
       return 'NULL' if value.nil?
 
       case value
-        when Numeric then quote_numeric(value)
-        when ::Extlib::ByteArray then quote_byte_array(value)
-        when String then quote_string(value)
-        when Time then quote_time(value)
-        when DateTime then quote_datetime(value)
-        when Date then quote_date(value)
-        when TrueClass, FalseClass then quote_boolean(value)
-        when Array then quote_array(value)
-        when Range then quote_range(value)
-        when Symbol then quote_symbol(value)
-        when Regexp then quote_regexp(value)
-        when Class then quote_class(value)
-        else
-          if value.respond_to?(:to_sql)
-            value.to_sql
-          else
-            raise "Don't know how to quote #{value.class} objects (#{value.inspect})"
-          end
+      when Numeric then quote_numeric(value)
+      when ::Extlib::ByteArray then quote_byte_array(value)
+      when String then quote_string(value)
+      when Time then quote_time(value)
+      when DateTime then quote_datetime(value)
+      when Date then quote_date(value)
+      when TrueClass, FalseClass then quote_boolean(value)
+      when Array then quote_array(value)
+      when Range then quote_range(value)
+      when Symbol then quote_symbol(value)
+      when Regexp then quote_regexp(value)
+      when Class then quote_class(value)
+      else
+        raise "Don't know how to quote #{value.class} objects (#{value.inspect})" unless value.respond_to?(:to_sql)
+
+        value.to_sql
+
       end
     end
 
@@ -52,11 +49,16 @@ module DataObjects
     def quote_time(value)
       offset = value.utc_offset
       if offset >= 0
-        offset_string = "+#{sprintf("%02d", offset / 3600)}:#{sprintf("%02d", (offset % 3600) / 60)}"
+        offset_string = "+#{format('%02d', offset / 3600)}:#{format('%02d', (offset % 3600) / 60)}"
       elsif offset < 0
-        offset_string = "-#{sprintf("%02d", -offset / 3600)}:#{sprintf("%02d", (-offset % 3600) / 60)}"
+        offset_string = "-#{format('%02d', -offset / 3600)}:#{format('%02d', (-offset % 3600) / 60)}"
       end
-      "'#{value.strftime('%Y-%m-%dT%H:%M:%S')}" << (value.usec > 0 ? ".#{value.usec.to_s.rjust(6, '0')}" : "") << offset_string << "'"
+      "'#{value.strftime('%Y-%m-%dT%H:%M:%S')}" << (if value.usec > 0
+                                                      ".#{value.usec.to_s.rjust(6,
+                                                                                '0')}"
+                                                    else
+                                                      ''
+                                                    end) << offset_string << "'"
     end
 
     # Quote a DateTime by relying on it's own to_s conversion
@@ -66,7 +68,7 @@ module DataObjects
 
     # Convert a Date to standard YMD format
     def quote_date(value)
-      "'#{value.strftime("%Y-%m-%d")}'"
+      "'#{value.strftime('%Y-%m-%d')}'"
     end
 
     # Quote true, false as the strings TRUE, FALSE
@@ -93,7 +95,5 @@ module DataObjects
     def quote_byte_array(value)
       quote_string(value)
     end
-
   end
-
 end

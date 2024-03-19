@@ -1,10 +1,6 @@
-
 module DataObjects
-
   module Mysql
-
     class Transaction < DataObjects::Transaction
-
       def begin_prepared
         cmd = "XA START '#{id}'"
         connection.create_command(cmd).execute_non_query
@@ -26,15 +22,10 @@ module DataObjects
         connection.create_command(cmd).execute_non_query
       end
 
-      private
-
-      def finalize_transaction
+      private def finalize_transaction
         cmd = "XA END '#{id}'"
         connection.create_command(cmd).execute_non_query
       end
-
     end
-
   end
-
 end

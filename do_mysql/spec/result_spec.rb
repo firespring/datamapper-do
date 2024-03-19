@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 require File.expand_path(File.join(File.dirname(__FILE__), 'spec_helper'))
 require 'data_objects/spec/shared/result_spec'
 
@@ -17,9 +15,7 @@ describe DataObjects::Mysql::Result do
 end
 
 describe DataObjects::Mysql::Result do
-
   describe 'insert_id' do
-
     before do
       setup_test_environment
       @connection = DataObjects::Connection.new(CONFIG.uri)
@@ -38,6 +34,5 @@ describe DataObjects::Mysql::Result do
     it 'should return the bigint id' do
       @result.insert_id.should == 3_000_000_001
     end
-
   end
 end
