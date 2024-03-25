@@ -70,20 +70,20 @@ shared_examples_for 'a Connection' do
     describe 'on closed connection' do
       before do
         @closed_connection = DataObjects::Connection.new(CONFIG.uri)
-        @closed_connection.detach
-        @closed_connection.dispose
+        @closed_connection&.detach
+        @closed_connection&.dispose
       end
 
       after do
-        @closed_connection.close
+        @closed_connection&.close
         @closed_connection = nil
       end
 
-      it { @closed_connection.dispose.should be false }
+      it { @closed_connection&.dispose&.should be false }
 
       it 'should raise an error on creating a command' do
         expect do
-          @closed_connection.create_command('INSERT INTO non_existent_table (tester) VALUES (1)').execute_non_query
+          @closed_connection&.create_command('INSERT INTO non_existent_table (tester) VALUES (1)')&.execute_non_query
         end.to raise_error(DataObjects::ConnectionError)
       end
     end
@@ -105,11 +105,13 @@ shared_examples_for 'a Connection with authentication support' do
     end
 
     it 'should raise an error if bad username is given' do
-      connecting_with("#{@driver}://thisreallyshouldntexist:#{@password}@#{@host}:#{@port}#{@database}").should raise_error # (ArgumentError, DataObjects::Error)
+      connecting_with("#{@driver}://thisreallyshouldntexist:#{@password}@#{@host}:#{@port}#{@database}")
+        .should raise_error # (ArgumentError, DataObjects::Error)
     end
 
     it 'should raise an error if bad password is given' do
-      connecting_with("#{@driver}://#{@user}:completelyincorrectpassword:#{@host}:#{@port}#{@database}").should raise_error # (ArgumentError, DataObjects::Error)
+      connecting_with("#{@driver}://#{@user}:completelyincorrectpassword:#{@host}:#{@port}#{@database}")
+        .should raise_error # (ArgumentError, DataObjects::Error)
     end
 
     it 'should raise an error if an invalid port is given' do
@@ -117,7 +119,8 @@ shared_examples_for 'a Connection with authentication support' do
     end
 
     it 'should raise an error if an invalid database is given' do
-      connecting_with("#{@driver}://#{@user}:#{@password}:#{@host}:#{@port}/someweirddatabase").should raise_error # (ArgumentError, DataObjects::Error)
+      connecting_with("#{@driver}://#{@user}:#{@password}:#{@host}:#{@port}/someweirddatabase")
+        .should raise_error # (ArgumentError, DataObjects::Error)
     end
   end
 end

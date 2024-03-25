@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'addressable', '~> 2.1'
+gem 'addressable'
 gem 'rake'
 gem 'rake-compiler'
 gem 'rspec', '~> 3.13'

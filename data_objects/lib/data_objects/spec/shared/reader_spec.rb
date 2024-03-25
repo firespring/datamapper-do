@@ -5,7 +5,8 @@ shared_examples_for 'a Reader' do
 
   before do
     @connection = DataObjects::Connection.new(CONFIG.uri)
-    @reader     = @connection.create_command('SELECT code, name FROM widgets WHERE ad_description = ? order by id').execute_reader('Buy this product now!')
+    @reader     = @connection.create_command('SELECT code, name FROM widgets WHERE ad_description = ? order by id')
+                             .execute_reader('Buy this product now!')
     @reader2    = @connection.create_command('SELECT code FROM widgets WHERE ad_description = ? order by id').execute_reader('Buy this product now!')
   end
 
@@ -25,7 +26,8 @@ shared_examples_for 'a Reader' do
     end
 
     it 'should return the field alias as the name, when the SQL AS keyword is specified' do
-      reader = @connection.create_command('SELECT code AS codigo, name AS nombre FROM widgets WHERE ad_description = ? order by id').execute_reader('Buy this product now!')
+      reader = @connection.create_command('SELECT code AS codigo, name AS nombre FROM widgets WHERE ad_description = ? order by id')
+                          .execute_reader('Buy this product now!')
       reader.fields.should_not be_array_case_insensitively_equal_to(%w(code name))
       reader.fields.should     be_array_case_insensitively_equal_to(%w(codigo nombre))
       reader.close
@@ -170,7 +172,9 @@ shared_examples_for 'a Reader' do
     end
 
     it 'should return the reader' do
-      @reader.each { |row| }.should equal(@reader)
+      @reader.each do |_row|
+        # empty block
+      end.should equal(@reader)
     end
   end
 end

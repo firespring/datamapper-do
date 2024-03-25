@@ -88,9 +88,8 @@ shared_examples_for 'supporting DateTime' do
   describe 'writing an DateTime' do
     before do
       local_offset = Rational(Time.local(2008, 2, 14).utc_offset, 86_400)
-      @reader = @connection.create_command('SELECT id FROM widgets WHERE release_datetime = ? ORDER BY id').execute_reader(DateTime.civil(
-                                                                                                                             2008, 2, 14, 0o0, 31, 12, local_offset
-                                                                                                                           ))
+      @reader = @connection.create_command('SELECT id FROM widgets WHERE release_datetime = ? ORDER BY id')
+                           .execute_reader(DateTime.civil(2008, 2, 14, 0o0, 31, 12, local_offset))
       @reader.next!
       @values = @reader.values
     end
@@ -100,7 +99,7 @@ shared_examples_for 'supporting DateTime' do
     end
 
     it 'should return the correct entry' do
-      # Some of the drivers starts autoincrementation from 0 not 1
+      # Some of the drivers starts auto-incrementation from 0 not 1
       @values.first.should(satisfy { |val| [0, 1].include?(val) })
     end
   end

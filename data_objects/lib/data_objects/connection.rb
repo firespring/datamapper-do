@@ -1,6 +1,7 @@
 begin
   require 'fastthread'
 rescue LoadError
+  warn 'LoadError'
 end
 
 module DataObjects
@@ -125,11 +126,13 @@ module DataObjects
     end
 
     private def driver_namespace
-      DataObjects.const_get(self.class.name.split('::')[-2])
+      constant_name = self.class.name&.split('::')
+      DataObjects.const_get(constant_name[-2])
     end
 
     def self.concrete_command
-      @concrete_command ||= DataObjects.const_get(name.split('::')[-2]).const_get('Command')
+      constant_name = name&.split('::')
+      @concrete_command ||= DataObjects.const_get(constant_name[-2]).const_get('Command')
     end
   end
 end

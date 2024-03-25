@@ -67,7 +67,7 @@ shared_examples_for 'supporting String' do
     end
 
     it 'should return the correct entry' do
-      # Some of the drivers starts autoincrementation from 0 not 1
+      # Some of the drivers starts auto-incrementation from 0 not 1
       @values.first.should(satisfy { |val| [1, 2].include?(val) })
     end
   end
@@ -123,7 +123,7 @@ shared_examples_for 'supporting String' do
     end
 
     it 'should return the correct entry' do
-      # Some of the drivers starts autoincrementation from 0 not 1
+      # Some of the drivers starts auto-incrementation from 0 not 1
       @values.first.should(satisfy { |val| [1, 2].include?(val) })
     end
   end

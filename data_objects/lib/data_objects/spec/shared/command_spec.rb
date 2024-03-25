@@ -167,6 +167,7 @@ shared_examples_for 'a Command' do
   it { @command.should respond_to(:to_s) }
 
   describe 'to_s' do
+    # Tests not implemented
   end
 end
 

@@ -1,6 +1,6 @@
 module DataObjects
   def self.exiting=(bool)
-    DataObjects::Pooling.scavenger.wakeup if bool && DataObjects.const_defined?('Pooling') && DataObjects::Pooling.scavenger?
+    DataObjects::Pooling.scavenger&.wakeup if bool && DataObjects.const_defined?('Pooling') && DataObjects::Pooling.scavenger?
     @exiting = true
   end
 
@@ -13,14 +13,14 @@ module DataObjects
   # ==== Notes
   # Provides pooling support to class it got included in.
   #
-  # Pooling of objects is a faster way of aquiring instances
+  # Pooling of objects is a faster way of acquiring instances
   # of objects compared to regular allocation and initialization
-  # because instances are keeped in memory reused.
+  # because instances are kept in memory reused.
   #
   # Classes that include Pooling module have re-defined new
   # method that returns instances acquired from pool.
   #
-  # Term resource is used for any type of poolable objects
+  # Term resource is used for any type of pool-able objects
   # and should NOT be thought as DataMapper Resource or
   # ActiveResource resource and such.
   #
@@ -226,10 +226,11 @@ module DataObjects
 
       def expired?
         @available.each do |instance|
-          if DataObjects.exiting || instance.instance_variable_get(:@__allocated_in_pool) + DataObjects::Pooling.scavenger_interval <= (Time.now + 0.02)
-            instance.dispose
-            @available.delete(instance)
-          end
+          next unless DataObjects.exiting ||
+                      instance.instance_variable_get(:@__allocated_in_pool) + DataObjects::Pooling.scavenger_interval <= (Time.now + 0.02)
+
+          instance.dispose
+          @available.delete(instance)
         end
         size.zero?
       end

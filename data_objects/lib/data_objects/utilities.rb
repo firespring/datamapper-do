@@ -6,7 +6,7 @@ module DataObjects
   # @return <Object> The constant corresponding to the name.
   def self.full_const_get(name)
     list = name.split('::')
-    list.shift if list.first.nil? || list.first.strip.empty?
+    list.shift if list.first.nil? || list.first&.strip&.empty?
     obj = ::Object
     list.each do |x|
       # This is required because const_get tries to look for constants in the
