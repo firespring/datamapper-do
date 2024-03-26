@@ -156,8 +156,8 @@ module DataObjects
     #   log_level<String>     the message string to be logged
     #   delimiter<String>     delimiter to use between message sections
     #   log_creation<Boolean> log that the file is being created
-    public def initialize(*)
-      set_log(*)
+    public def initialize(*args)
+      set_log(*args)
     end
 
     # To replace an existing logger with a new one:
