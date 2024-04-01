@@ -30,12 +30,14 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency('data_objects', ['= 0.10.17'])
     else
       s.add_dependency('data_objects', ['= 0.10.17'])
-      s.add_dependency('rake-compiler', ['~> 0.7'])
+      s.add_dependency('rake', ['~> 13.1'])
+      s.add_dependency('rake-compiler', ['~> 1.2'])
       s.add_dependency('rspec', ['~> 3.13'])
     end
   else
     s.add_dependency('data_objects', ['= 0.10.17'])
-    s.add_dependency('rake-compiler', ['~> 0.7'])
+    s.add_dependency('rake', ['~> 13.1'])
+    s.add_dependency('rake-compiler', ['~> 1.2'])
     s.add_dependency('rspec', ['~> 3.13'])
   end
 end
