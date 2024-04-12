@@ -4,18 +4,17 @@ begin
   require 'rake/javaextensiontask'
 
   def gemspec
-    @clean_gemspec ||= Gem::Specification::load(File.expand_path('../../do_sqlite3.gemspec', __FILE__))
+    @gemspec ||= Gem::Specification.load(File.expand_path('../do_sqlite3.gemspec', __dir__))
   end
 
   unless JRUBY
     Rake::ExtensionTask.new('do_sqlite3', gemspec) do |ext|
-
       sqlite3_lib = File.expand_path(File.join(File.dirname(__FILE__), '..', 'vendor', 'sqlite3'))
 
       ext.lib_dir = "lib/#{gemspec.name}"
 
       ext.cross_compile = true
-      ext.cross_platform = ['x86-mingw32', 'x86-mswin32-60']
+      ext.cross_platform = %w(x86-mingw32 x86-mswin32-60)
       ext.cross_config_options << "--with-sqlite3-dir=#{sqlite3_lib}"
       ext.cross_config_options << "--with-sqlite3-include=#{sqlite3_lib}/include"
       ext.cross_config_options << "--with-sqlite3-lib=#{sqlite3_lib}/lib"
@@ -43,17 +42,14 @@ begin
       end
 
       # automatically add build options to avoid need of manual input
-      if RUBY_PLATFORM =~ /mswin|mingw/ then
-        ext.config_options << "--with-sqlite3-dir=#{sqlite3_lib}"
-      end
-
+      ext.config_options << "--with-sqlite3-dir=#{sqlite3_lib}" if RUBY_PLATFORM =~ /mswin|mingw/
     end
   end
 
   Rake::JavaExtensionTask.new('do_sqlite3', gemspec) do |ext|
     ext.ext_dir   = 'ext-java/src/main/java'
     ext.lib_dir   = "lib/#{gemspec.name}"
-    ext.debug     = ENV.has_key?('DO_JAVA_DEBUG') && ENV['DO_JAVA_DEBUG']
+    ext.debug     = ENV.key?('DO_JAVA_DEBUG') && ENV.fetch('DO_JAVA_DEBUG', nil)
     ext.classpath = '../do_jdbc/lib/do_jdbc_internal.jar'
     ext.java_compiling do |gem|
       gem.add_dependency 'jdbc-sqlite3', '>=3.5.8'
@@ -61,5 +57,5 @@ begin
     end
   end
 rescue LoadError
-  warn "To compile, install rake-compiler (gem install rake-compiler)"
+  warn 'To compile, install rake-compiler (gem install rake-compiler)'
 end

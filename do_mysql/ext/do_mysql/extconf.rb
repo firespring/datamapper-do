@@ -1,4 +1,4 @@
-ENV["RC_ARCHS"] = "" if RUBY_PLATFORM =~ /darwin/
+ENV['RC_ARCHS'] = '' if RUBY_PLATFORM =~ /darwin/
 
 require 'mkmf'
 require 'date'
@@ -9,8 +9,8 @@ RbConfig::MAKEFILE_CONFIG['CC'] = ENV['CC'] if ENV['CC']
 # All instances of mysql_config on PATH ...
 def mysql_config_paths
   ENV['PATH'].split(File::PATH_SEPARATOR).collect do |path|
-    [ "#{path}/mysql_config", "#{path}/mysql_config5" ].
-      detect { |bin| File.exist?(bin) }
+    ["#{path}/mysql_config", "#{path}/mysql_config5"]
+      .detect { |bin| File.exist?(bin) }
   end
 end
 
@@ -20,14 +20,16 @@ def default_mysql_config_path
 end
 
 def mysql_config(type)
-  IO.popen("#{default_mysql_config_path} --#{type}").readline.chomp rescue nil
+  IO.popen("#{default_mysql_config_path} --#{type}").readline.chomp
+rescue
+  nil
 end
 
 def default_prefix
-  if mc = default_mysql_config_path
-    File.dirname(File.dirname(mc))
+  if (mc = default_mysql_config_path)
+    File.dirname(mc, 2)
   else
-    "/usr/local"
+    '/usr/local'
   end
 end
 
@@ -40,16 +42,16 @@ if RUBY_PLATFORM =~ /mswin|mingw/
   have_library 'libmysql'
   have_func('mysql_query', 'mysql.h')
   have_func('mysql_ssl_set', 'mysql.h')
-elsif mc = with_config('mysql-config', default_mysql_config_path)
+elsif with_config('mysql-config', default_mysql_config_path)
   includes = mysql_config('include').split(/\s+/).map do |dir|
-    dir.gsub(/^-I/, "")
+    dir.gsub(/^-I/, '')
   end.uniq
-  libs     = mysql_config('libs').split(/\s+/).select {|lib| lib =~ /^-L/}.map do |dir|
-    dir.gsub(/^-L/, "")
+  libs = mysql_config('libs').split(/\s+/).grep(/^-L/).map do |dir|
+    dir.gsub(/^-L/, '')
   end.uniq
 
-  linked     = mysql_config('libs').split(/\s+/).select {|lib| lib =~ /^-l/}.map do |dir|
-    dir.gsub(/^-l/, "")
+  linked = mysql_config('libs').split(/\s+/).grep(/^-l/).map do |dir|
+    dir.gsub(/^-l/, '')
   end.uniq
 
   dir_config('mysql', includes, libs)
@@ -57,11 +59,10 @@ elsif mc = with_config('mysql-config', default_mysql_config_path)
     have_library link
   end
 else
-  inc, lib = dir_config('mysql', default_prefix)
-  libs = ['m', 'z', 'socket', 'nsl']
+  _, lib = dir_config('mysql', default_prefix)
   lib_dirs =
-    [ lib, "/usr/lib", "/usr/local/lib", "/opt/local/lib" ].collect do |path|
-      [ path, "#{path}/mysql", "#{path}/mysql5/mysql" ]
+    [lib, '/usr/lib', '/usr/local/lib', '/opt/local/lib'].collect do |path|
+      [path, "#{path}/mysql", "#{path}/mysql5/mysql"]
     end
   find_library('mysqlclient', 'mysql_query', *lib_dirs.flatten) || exit(1)
   find_header('mysql.h', *lib_dirs.flatten.map { |p| p.gsub('/lib', '/include') })
@@ -85,14 +86,12 @@ have_struct_member 'MYSQL_FIELD', 'charsetnr', 'mysql.h'
 
 have_func('rb_thread_fd_select')
 
-unless DateTime.respond_to?(:new!)
-  $CFLAGS << ' -DHAVE_NO_DATETIME_NEWBANG'
-end
+# rubocop:disable Style/GlobalVars
+$CFLAGS << ' -DHAVE_NO_DATETIME_NEWBANG' unless DateTime.respond_to?(:new!)
 
 $CFLAGS << ' -Wall '
 
-if RUBY_VERSION < '1.8.6'
-  $CFLAGS << ' -DRUBY_LESS_THAN_186'
-end
+$CFLAGS << ' -DRUBY_LESS_THAN_186' if RUBY_VERSION < '1.8.6'
+# rubocop:enable Style/GlobalVars
 
 create_makefile('do_mysql/do_mysql')

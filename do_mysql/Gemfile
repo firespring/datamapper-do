@@ -1,14 +1,16 @@
-source :rubygems
+source 'https://rubygems.org'
 
-path '../'
+gem 'rspec', '~> 3.13'
+gem 'rspec-its'
 
 gemspec
 
 platforms :jruby do
-  gem 'jdbc-mysql', '>=5.0.4'
   gem 'do_jdbc',    '0.10.17'
+  gem 'jdbc-mysql', '>=5.0.4'
 end
 
 group :development do # Development dependencies (as in the gemspec)
   gem 'rake'
+  gem 'rubocop'
 end

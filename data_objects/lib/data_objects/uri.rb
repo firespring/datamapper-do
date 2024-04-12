@@ -1,7 +1,6 @@
 require 'addressable/uri'
 
 module DataObjects
-
   # A DataObjects URI is of the form scheme://user:password@host:port/path#fragment
   #
   # The elements are all optional except scheme and path:
@@ -18,38 +17,36 @@ module DataObjects
 
     # Make a DataObjects::URI object by parsing a string. Simply delegates to Addressable::URI::parse.
     def self.parse(uri)
-      return uri if uri.kind_of?(self)
+      return uri if uri.is_a?(self)
 
-      if uri.kind_of?(Addressable::URI)
+      if uri.is_a?(Addressable::URI)
         scheme = uri.scheme
+      elsif uri[0, 4] == 'jdbc'
+        scheme = uri[0, 4]
+        uri       = Addressable::URI.parse(uri[5, uri.length])
+        subscheme = uri.scheme
       else
-        if uri[0,4] == 'jdbc'
-          scheme    = uri[0,4]
-          uri       = Addressable::URI::parse(uri[5, uri.length])
-          subscheme = uri.scheme
-        else
-          uri       = Addressable::URI::parse(uri)
-          scheme    = uri.scheme
-          subscheme = nil
-        end
+        uri       = Addressable::URI.parse(uri)
+        scheme    = uri.scheme
+        subscheme = nil
       end
 
-      self.new(
-                :scheme     => scheme,
-                :subscheme  => subscheme,
-                :user       => uri.user,
-                :password   => uri.password,
-                :host       => uri.host,
-                :port       => uri.port,
-                :path       => uri.path,
-                :query      => uri.query_values,
-                :fragment   => uri.fragment,
-                :relative   => !!uri.to_s.index('//') # basic (naive) check for relativity / opaqueness
-              )
+      new(
+        scheme: scheme,
+        subscheme: subscheme,
+        user: uri.user,
+        password: uri.password,
+        host: uri.host,
+        port: uri.port,
+        path: uri.path,
+        query: uri.query_values,
+        fragment: uri.fragment,
+        relative: !uri.to_s.index('//').nil? # basic (naive) check for relativity / opaqueness
+      )
     end
 
     def initialize(*args)
-      if (component = args.first).kind_of?(Hash)
+      if (component = args.first).is_a?(Hash)
         @scheme     = component[:scheme]
         @subscheme  = component[:subscheme]
         @user       = component[:user]
@@ -78,23 +75,23 @@ module DataObjects
 
     # Display this URI object as a string
     def to_s
-      string = ""
+      string = ''
       string << "#{scheme}:"     if scheme
       string << "#{subscheme}:"  if subscheme
       string << '//'             if relative?
       if user
-        string << "#{user}"
-        string << "@"
+        string << user.to_s
+        string << '@'
       end
-      string << "#{host}"        if host
+      string << host.to_s        if host
       string << ":#{port}"       if port
       string << path.to_s
       if query
-        string << "?" << query.map do |key, value|
+        string << '?' << query.map do |key, value|
           "#{key}=#{value}"
-        end.join("&")
+        end.join('&')
       end
-      string << "##{fragment}"   if fragment
+      string << "##{fragment}" if fragment
       string
     end
 
@@ -107,6 +104,5 @@ module DataObjects
     def hash
       to_s.hash
     end
-
   end
 end

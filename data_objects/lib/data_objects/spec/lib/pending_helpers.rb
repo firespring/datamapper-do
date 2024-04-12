@@ -1,10 +1,12 @@
-module DataObjects::Spec
-  module PendingHelpers
-    def pending_if(message, boolean)
-      if boolean
-        pending(message) { yield }
-      else
-        yield
+module DataObjects
+  module Spec
+    module PendingHelpers
+      def pending_if(message, boolean, &)
+        if boolean
+          pending(message, &)
+        else
+          yield
+        end
       end
     end
   end

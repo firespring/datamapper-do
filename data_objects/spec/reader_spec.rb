@@ -9,7 +9,6 @@ describe DataObjects::Reader do
   after { connection.close }
 
   context 'should define a standard API' do
-
     it { should be_a(Enumerable)    }
 
     it { should respond_to(:close)  }
@@ -18,5 +17,4 @@ describe DataObjects::Reader do
     it { should respond_to(:fields) }
     it { should respond_to(:each)   }
   end
-
 end
