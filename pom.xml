@@ -13,12 +13,12 @@
   <url>http://datamapper.org/</url>
   <issueManagement>
     <system>github</system>
-    <url>https://github.com/datamapper/do/issues</url>
+    <url>https://github.com/firespring/datamapper-do/issues</url>
   </issueManagement>
   <scm>
-    <connection>scm:git:git://github.com/datamapper/do.git</connection>
-    <developerConnection>scm:git:git@github.com:datamapper/do.git</developerConnection>
-    <url>https://github.com/datamapper/do</url>
+    <connection>scm:git:git://github.com/firespring/datamapper-do.git</connection>
+    <developerConnection>scm:git:git@github.com:firepsring/datamapper-do.git</developerConnection>
+    <url>https://github.com/firespring/datamapper-do</url>
   </scm>
   <licenses>
     <license>

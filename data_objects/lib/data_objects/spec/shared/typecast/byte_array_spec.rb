@@ -57,7 +57,9 @@ shared_examples_for 'supporting ByteArray' do
 
   describe 'writing a ByteArray' do
     before do
-      @reader = @connection.create_command('SELECT ad_description FROM widgets WHERE cad_drawing = ?').execute_reader(Extlib::ByteArray.new("CAD \001 \000 DRAWING"))
+      @reader = @connection.create_command('SELECT ad_description FROM widgets WHERE cad_drawing = ?').execute_reader(
+        Extlib::ByteArray.new("CAD \001 \000 DRAWING")
+      )
       @reader.next!
       @values = @reader.values
     end
@@ -67,7 +69,7 @@ shared_examples_for 'supporting ByteArray' do
     end
 
     it 'should return the correct entry' do
-      # Some of the drivers starts autoincrementation from 0 not 1
+      # Some of the drivers starts auto-incrementation from 0 not 1
       @values.first.should == 'Buy this product now!'
     end
   end

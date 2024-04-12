@@ -4,7 +4,8 @@ module DataObjects
   # A DataObjects URI is of the form scheme://user:password@host:port/path#fragment
   #
   # The elements are all optional except scheme and path:
-  # scheme:: The name of a DBMS for which you have a do_\&lt;scheme\&gt; adapter gem installed. If scheme is *jdbc*, the actual DBMS is in the _path_ followed by a colon.
+  # scheme:: The name of a DBMS for which you have a do_\&lt;scheme\&gt; adapter gem installed.
+  #          If scheme is *jdbc*, the actual DBMS is in the _path_ followed by a colon.
   # user:: The name of the user to authenticate to the database
   # password:: The password to use in authentication
   # host:: The domain name (defaulting to localhost) where the database is available
@@ -24,23 +25,23 @@ module DataObjects
       elsif uri[0, 4] == 'jdbc'
         scheme = uri[0, 4]
         uri       = Addressable::URI.parse(uri[5, uri.length])
-        subscheme = uri.scheme
+        subscheme = uri&.scheme
       else
         uri       = Addressable::URI.parse(uri)
-        scheme    = uri.scheme
+        scheme    = uri&.scheme
         subscheme = nil
       end
 
       new(
         scheme: scheme,
         subscheme: subscheme,
-        user: uri.user,
-        password: uri.password,
-        host: uri.host,
-        port: uri.port,
-        path: uri.path,
-        query: uri.query_values,
-        fragment: uri.fragment,
+        user: uri&.user,
+        password: uri&.password,
+        host: uri&.host,
+        port: uri&.port,
+        path: uri&.path,
+        query: uri&.query_values,
+        fragment: uri&.fragment,
         relative: !uri.to_s.index('//').nil? # basic (naive) check for relativity / opaqueness
       )
     end

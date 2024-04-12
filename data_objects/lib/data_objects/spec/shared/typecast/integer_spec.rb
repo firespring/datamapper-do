@@ -28,7 +28,7 @@ shared_examples_for 'supporting Integer' do
       end
 
       it 'should return the correct result' do
-        # Some of the drivers starts autoincrementation from 0 not 1
+        # Some of the drivers starts auto-incrementation from 0 not 1
         @values.first.should(satisfy { |val| [1, 0].include?(val) })
       end
     end
@@ -74,7 +74,8 @@ shared_examples_for 'supporting Integer' do
 
   describe 'writing a big Integer' do
     before do
-      @connection.create_command('UPDATE widgets SET super_number = ? WHERE id = 10').execute_non_query(2_147_483_648) # bigger than Integer.MAX in java !!
+      @connection.create_command('UPDATE widgets SET super_number = ? WHERE id = 10')
+                 .execute_non_query(2_147_483_648) # bigger than Integer.MAX in java !!
       @reader = @connection.create_command('SELECT super_number FROM widgets WHERE id = ?').execute_reader(10)
       @reader.next!
       @values = @reader.values

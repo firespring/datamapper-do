@@ -75,7 +75,7 @@ Then:
     sudo gem install do_sqlserver
 
 For more information, see the SQL Server driver wiki page:
-<http://wiki.github.com/datamapper/do/sql-server>.
+<http://wiki.github.com/firespring/datamapper-do/sql-server>.
 
 ## Developers
 
@@ -85,7 +85,7 @@ Follow the above installation instructions. Additionally, you'll need:
 
 See the DataObjects wiki for more comprehensive information on installing and
 contributing to the JRuby-variant of this driver:
-<http://wiki.github.com/datamapper/do/jruby>.
+<http://wiki.github.com/firespring/datamapper-do/jruby>.
 
 To run specs:
 

@@ -42,7 +42,7 @@ To compile and install from source:
 ## Developers
 
 See the DataObjects wiki for more comprehensive information:
-<http://wiki.github.com/datamapper/do/jruby>.
+<http://wiki.github.com/firespring/datamapper-do/jruby>.
 
 ## License
 

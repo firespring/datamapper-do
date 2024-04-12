@@ -55,7 +55,7 @@ To compile and install from source:
  * Then, install this driver with `(jruby -S) rake install`.
 
 For more information, see the Oracle driver wiki page:
-<http://wiki.github.com/datamapper/do/oracle>.
+<http://wiki.github.com/firespring/datamapper-do/oracle>.
 
 ## Developers
 
@@ -65,7 +65,7 @@ Follow the above installation instructions. Additionally, you'll need:
 
 See the DataObjects wiki for more comprehensive information on installing and
 contributing to the JRuby-variant of this driver:
-<http://wiki.github.com/datamapper/do/jruby>.
+<http://wiki.github.com/firespring/datamapper-do/jruby>.
 
 ### install oracle jdbc driver in maven
 

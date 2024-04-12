@@ -13,6 +13,6 @@ Licensed under the MIT license. Please see the {file:LICENSE} for more informati
 ## Contact
 
 **IRC**:       **Join us on IRC in #datamapper on irc.freenode.net!**<br/>
-**Git**:       <http://github.com/datamapper/do><br/>
+**Git**:       <http://github.com/firesring/datamapper-do><br/>
 **Author**:    Dirkjan Bussink<br/>
 **License**:   MIT License
