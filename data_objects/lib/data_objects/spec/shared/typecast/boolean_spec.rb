@@ -1,4 +1,4 @@
-shared_examples_for 'supporting Boolean' do
+shared_examples 'supporting Boolean' do
   before :all do
     setup_test_environment
   end
@@ -96,7 +96,7 @@ shared_examples_for 'supporting Boolean' do
   end
 end
 
-shared_examples_for 'supporting Boolean autocasting' do
+shared_examples 'supporting Boolean autocasting' do
   before :all do
     setup_test_environment
   end

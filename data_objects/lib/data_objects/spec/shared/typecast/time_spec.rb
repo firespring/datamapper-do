@@ -1,4 +1,4 @@
-shared_examples_for 'supporting Time' do
+shared_examples 'supporting Time' do
   before :all do
     setup_test_environment
   end
@@ -77,7 +77,7 @@ shared_examples_for 'supporting Time' do
   end
 end
 
-shared_examples_for 'supporting sub second Time' do
+shared_examples 'supporting sub second Time' do
   before :all do
     setup_test_environment
   end

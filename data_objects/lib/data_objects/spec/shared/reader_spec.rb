@@ -1,4 +1,4 @@
-shared_examples_for 'a Reader' do
+shared_examples 'a Reader' do
   before :all do
     setup_test_environment
   end

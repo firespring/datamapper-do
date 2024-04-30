@@ -1,4 +1,4 @@
-shared_examples_for 'supporting Array' do
+shared_examples 'supporting Array' do
   before :all do
     setup_test_environment
   end

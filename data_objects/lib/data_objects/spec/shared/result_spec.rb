@@ -1,4 +1,4 @@
-shared_examples_for 'a Result' do
+shared_examples 'a Result' do
   before :all do
     setup_test_environment
   end
@@ -21,7 +21,7 @@ shared_examples_for 'a Result' do
   end
 end
 
-shared_examples_for 'a Result which returns inserted key with sequences' do
+shared_examples 'a Result which returns inserted key with sequences' do
   describe 'insert_id' do
     before do
       setup_test_environment
@@ -45,7 +45,7 @@ shared_examples_for 'a Result which returns inserted key with sequences' do
   end
 end
 
-shared_examples_for 'a Result which returns nil without sequences' do
+shared_examples 'a Result which returns nil without sequences' do
   describe 'insert_id' do
     before do
       setup_test_environment

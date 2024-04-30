@@ -1,4 +1,4 @@
-shared_examples_for 'a driver supporting different encodings' do
+shared_examples 'a driver supporting different encodings' do
   describe 'character_set' do
     before do
       @connection = DataObjects::Connection.new(CONFIG.uri)
@@ -41,7 +41,7 @@ shared_examples_for 'a driver supporting different encodings' do
   end
 end
 
-shared_examples_for 'returning correctly encoded strings for the default database encoding' do
+shared_examples 'returning correctly encoded strings for the default database encoding' do
   if defined?(Encoding)
 
     before :all do
@@ -99,7 +99,7 @@ shared_examples_for 'returning correctly encoded strings for the default databas
   end
 end
 
-shared_examples_for 'returning correctly encoded strings for the default internal encoding' do
+shared_examples 'returning correctly encoded strings for the default internal encoding' do
   if defined?(Encoding)
 
     before :all do

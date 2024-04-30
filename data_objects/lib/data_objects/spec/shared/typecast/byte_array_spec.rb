@@ -1,4 +1,4 @@
-shared_examples_for 'supporting ByteArray' do
+shared_examples 'supporting ByteArray' do
   before :all do
     setup_test_environment
   end

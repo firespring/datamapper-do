@@ -1,4 +1,4 @@
-shared_examples_for 'supporting Integer' do
+shared_examples 'supporting Integer' do
   before :all do
     setup_test_environment
   end
