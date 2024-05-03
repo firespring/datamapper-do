@@ -5,23 +5,22 @@ require 'cgi'
 describe DataObjects::Mysql::Connection do
   before :all do
     @driver = CONFIG.scheme
-    @user   = CONFIG.user
+    @user = CONFIG.user
     @password = CONFIG.pass
-    @host   = CONFIG.host
-    @port   = CONFIG.port
+    @host = CONFIG.host
+    @port = CONFIG.port
     @database = CONFIG.database
     @ssl = CONFIG.ssl
   end
 
-  it_should_behave_like 'a Connection'
-  it_should_behave_like 'a Connection with authentication support'
-  it_should_behave_like 'a Connection allowing default database'
-  it_should_behave_like 'a Connection with JDBC URL support' if JRUBY
-  it_should_behave_like 'a Connection with SSL support' unless JRUBY
-  it_should_behave_like 'a Connection via JDNI' if JRUBY
+  it_behaves_like 'a Connection'
+  it_behaves_like 'a Connection with authentication support'
+  it_behaves_like 'a Connection allowing default database'
+  it_behaves_like 'a Connection with JDBC URL support' if JRUBY
+  it_behaves_like 'a Connection with SSL support' unless JRUBY
+  it_behaves_like 'a Connection via JDNI' if JRUBY
 
   if DataObjectsSpecHelpers.test_environment_supports_ssl?
-
     describe 'connecting with SSL' do
       it 'should raise an error when passed ssl=true' do
         -> { DataObjects::Connection.new("#{CONFIG.uri}?ssl=true") }
@@ -44,8 +43,8 @@ describe DataObjects::Mysql::Connection do
       end
 
       it 'should connect with a specified SSL cipher' do
-        DataObjects::Connection.new("#{CONFIG.uri}?#{CONFIG.ssl}&ssl[cipher]=#{SSLHelpers::CONFIG.cipher}")
-                               .ssl_cipher.should == SSLHelpers::CONFIG.cipher
+        expect(DataObjects::Connection.new("#{CONFIG.uri}?#{CONFIG.ssl}&ssl[cipher]=#{SSLHelpers::CONFIG.cipher}")
+                               .ssl_cipher).to == SSLHelpers::CONFIG.cipher
       end
 
       it 'should raise an error with an invalid SSL cipher' do
@@ -53,7 +52,6 @@ describe DataObjects::Mysql::Connection do
           .should raise_error
       end
     end
-
   end
 end
 # rubocop:enable Metrics/BlockLength

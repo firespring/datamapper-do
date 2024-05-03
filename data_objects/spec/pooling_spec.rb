@@ -4,6 +4,7 @@ require 'timeout'
 describe 'DataObjects::Pooling' do
   before do
     Object.send(:remove_const, :Person) if defined?(Person)
+
     class ::Person
       include DataObjects::Pooling
 
@@ -75,7 +76,7 @@ describe 'DataObjects::Pooling' do
     ted = Person.new('Ted')
 
     Person.__pools.each_value do |pool|
-      pool.size.should eq 1
+      expect(pool.size).to eq 1
     end
 
     bob.release
@@ -83,31 +84,31 @@ describe 'DataObjects::Pooling' do
     ted.release
 
     Person.__pools.each_value do |pool|
-      pool.size.should eq 1
+      expect(pool.size).to eq 1
     end
   end
 
   it 'tracks the initialized pools' do
     bob = Person.new('Bob') # Ensure the pool is "primed"
-    bob.name.should eq 'Bob'
-    bob.instance_variable_get(:@__pool).should_not be_nil
-    Person.__pools.size.should eq 1
+    expect(bob.name).to eq 'Bob'
+    expect(bob.instance_variable_get(:@__pool)).not_to be_nil
+    expect(Person.__pools.size).to eq 1
     bob.release
-    Person.__pools.size.should eq 1
+    expect(Person.__pools.size).to eq 1
 
-    DataObjects::Pooling.pools.should_not be_empty
+    expect(DataObjects::Pooling.pools).not_to be_empty
 
     sleep(1.2)
 
     # NOTE: This assertion is commented out, as our MockConnection objects are
     #       currently in the pool.
     # DataObjects::Pooling::pools.should be_empty
-    bob.name.should be_nil
+    expect(bob.name).to be_nil
   end
 
   it 'allows you to overwrite Class#new' do
     bob = Overwriter.new('Bob')
-    bob.should be_overwritten
+    expect(bob).to be_overwritten
     bob.release
   end
 
@@ -130,13 +131,13 @@ describe 'DataObjects::Pooling' do
     Overwriter.new('Bob').release
     bob.release
 
-    bob.name.should eq 'Bob'
+    expect(bob.name).to eq 'Bob'
 
-    Overwriter.__pools[['Bob']].size.should eq 2
+    expect(Overwriter.__pools[['Bob']].size).to eq 2
     Overwriter.__pools[['Bob']].flush!
-    Overwriter.__pools[['Bob']].size.should eq 0
+    expect(Overwriter.__pools[['Bob']].size).to eq 0
 
-    bob.name.should be_nil
+    expect(bob.name).to be_nil
   end
 
   it 'wakes up the scavenger thread when exiting' do
@@ -144,13 +145,13 @@ describe 'DataObjects::Pooling' do
     bob.release
     DataObjects.exiting = true
     sleep(1)
-    DataObjects::Pooling.scavenger?.should be false
+    expect(DataObjects::Pooling.scavenger?).to be false
   end
 
   it 'detaches an instance from the pool' do
     bob = Person.new('Bob')
-    Person.__pools[['Bob']].size.should eq 1
+    expect(Person.__pools[['Bob']].size).to eq 1
     bob.detach
-    Person.__pools[['Bob']].size.should eq 0
+    expect(Person.__pools[['Bob']].size).to eq 0
   end
 end

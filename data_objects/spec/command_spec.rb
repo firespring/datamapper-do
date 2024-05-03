@@ -12,7 +12,7 @@ describe DataObjects::Command do
 
   %w(connection execute_non_query execute_reader set_types).each do |meth|
     it "should respond to ##{meth}" do
-      @command.should respond_to(meth.intern)
+      expect(@command).to respond_to(meth.intern)
     end
   end
 

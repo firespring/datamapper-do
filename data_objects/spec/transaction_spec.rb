@@ -8,19 +8,19 @@ describe DataObjects::Transaction do
   end
 
   it 'should have a HOST constant' do
-    DataObjects::Transaction::HOST.should_not == nil?
+    expect(DataObjects::Transaction::HOST).not_to == nil?
   end
 
   describe '#initialize' do
     it 'should provide a connection' do
-      @transaction.connection.should == @connection
+      expect(@transaction.connection).to == @connection
     end
     it 'should provide an id' do
-      @transaction.id.should_not.nil?
+      expect(@transaction.id).not_to be_nil
     end
     it 'should provide a unique id' do
       DataObjects::Connection.should_receive(:new).with('mock://mock/mock2').once.and_return(@connection)
-      @transaction.id.should_not == DataObjects::Transaction.new('mock://mock/mock2').id
+      expect(@transaction.id).not_to == DataObjects::Transaction.new('mock://mock/mock2').id
     end
   end
   describe '#close' do
