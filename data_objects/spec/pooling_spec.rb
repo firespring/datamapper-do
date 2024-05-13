@@ -119,11 +119,11 @@ describe 'DataObjects::Pooling' do
       bob.release
     end
 
-    lambda do
+    expect do
       bob = Person.new('Bob')
       t1.join
       bob.release
-    end.should_not raise_error(DataObjects::Pooling::InvalidResourceError)
+    end.not_to raise_error
   end
 
   it 'allows you to flush a pool' do

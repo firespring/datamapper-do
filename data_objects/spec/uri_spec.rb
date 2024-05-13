@@ -16,7 +16,7 @@ describe DataObjects::URI do
     its(:fragment) { is_expected.to eq 'fragment' }
 
     it 'should provide a correct string representation' do
-      expect(subject.to_s).to == 'mock://username@localhost:12345/path?encoding=utf8#fragment'
+      expect(subject.to_s).to eq 'mock://username@localhost:12345/path?encoding=utf8#fragment'
     end
   end
 

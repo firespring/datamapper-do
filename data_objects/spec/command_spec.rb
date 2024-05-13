@@ -18,7 +18,7 @@ describe DataObjects::Command do
 
   %w(execute_non_query execute_reader set_types).each do |meth|
     it "should raise NotImplementedError on ##{meth}" do
-      -> { @command.send(meth.intern, nil) }.should raise_error(NotImplementedError)
+      expect { @command.send(meth.intern, nil) }.to raise_error(NotImplementedError)
     end
   end
 end
