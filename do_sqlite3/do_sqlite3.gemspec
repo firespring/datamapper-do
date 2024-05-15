@@ -63,16 +63,14 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0')
       s.add_runtime_dependency('data_objects', ['= 0.10.17'])
-      s.add_development_dependency('rake-compiler', ['~> 0.7'])
-      s.add_development_dependency('rspec', ['~> 2.5'])
+      s.add_development_dependency('rake-compiler', ['~> 1.2'])
+      s.add_development_dependency('rspec', ['~> 3.13'])
     else
       s.add_dependency('data_objects', ['= 0.10.17'])
-      s.add_dependency('rake-compiler', ['~> 0.7'])
-      s.add_dependency('rake-compiler', ['~> 0.7'])
+      s.add_dependency('rake-compiler', ['~> 1.2'])
     end
   else
     s.add_dependency('data_objects', ['= 0.10.17'])
-    s.add_dependency('rspec', ['~> 2.5'])
-    s.add_dependency('rspec', ['~> 2.5'])
+    s.add_dependency('rspec', ['~> 3.13'])
   end
 end
