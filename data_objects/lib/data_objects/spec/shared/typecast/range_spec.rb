@@ -1,4 +1,4 @@
-shared_examples_for 'supporting Range' do
+shared_examples 'supporting Range' do
   before :all do
     setup_test_environment
   end

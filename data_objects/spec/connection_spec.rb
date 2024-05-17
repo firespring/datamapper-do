@@ -9,22 +9,22 @@ describe DataObjects::Connection do
   after { connection.close }
 
   context 'should define a standard API' do
-    let(:uri)   { 'mock://localhost' }
+    let(:uri) { 'mock://localhost' }
 
-    it { should respond_to(:dispose)        }
-    it { should respond_to(:create_command) }
+    it { is_expected.to respond_to(:dispose) }
+    it { is_expected.to respond_to(:create_command) }
 
-    its(:to_s)  { should == 'mock://localhost' }
+    its(:to_s) { is_expected.to eq 'mock://localhost' }
   end
 
   describe 'initialization' do
     context 'with a connection uri as a Addressable::URI' do
       let(:uri) { Addressable::URI.parse('mock://localhost/database') }
 
-      it { should be_kind_of(DataObjects::Mock::Connection) }
-      it { should be_kind_of(DataObjects::Pooling)          }
+      it { is_expected.to be_kind_of(DataObjects::Mock::Connection) }
+      it { is_expected.to be_kind_of(DataObjects::Pooling)          }
 
-      its(:to_s) { should == 'mock://localhost/database' }
+      its(:to_s) { is_expected.to eq 'mock://localhost/database' }
     end
 
     [
@@ -34,8 +34,8 @@ describe DataObjects::Connection do
       context 'should return the Connection specified by the scheme without pooling' do
         let(:uri) { jndi_url }
 
-        it { should be_kind_of(DataObjects::Mock2::Connection) }
-        it { should_not be_kind_of(DataObjects::Pooling)       }
+        it { is_expected.to be_kind_of(DataObjects::Mock2::Connection) }
+        it { is_expected.not_to be_kind_of(DataObjects::Pooling) }
       end
     end
 
@@ -51,7 +51,7 @@ describe DataObjects::Connection do
       context "with JDBC URL '#{jdbc_url}'" do
         let(:uri) { jdbc_url }
 
-        it { should be_kind_of(DataObjects::Mock::Connection) }
+        it { is_expected.to be_kind_of(DataObjects::Mock::Connection) }
       end
     end
   end

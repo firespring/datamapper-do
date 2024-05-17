@@ -1,4 +1,4 @@
-shared_examples_for 'raising a SQLError' do
+shared_examples 'raising a SQLError' do
   before :all do
     setup_test_environment
   end

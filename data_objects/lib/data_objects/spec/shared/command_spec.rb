@@ -1,6 +1,6 @@
 WINDOWS = Gem.win_platform? || (JRUBY && ENV_JAVA['os.name'] =~ /windows/i)
 
-shared_examples_for 'a Command' do
+shared_examples 'a Command' do
   before :all do
     setup_test_environment
   end
@@ -171,7 +171,7 @@ shared_examples_for 'a Command' do
   end
 end
 
-shared_examples_for 'a Command with async' do
+shared_examples 'a Command with async' do
   before :all do
     setup_test_environment
   end

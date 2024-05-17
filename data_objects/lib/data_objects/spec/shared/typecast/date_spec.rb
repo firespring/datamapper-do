@@ -1,4 +1,4 @@
-shared_examples_for 'supporting Date' do
+shared_examples 'supporting Date' do
   before :all do
     setup_test_environment
   end
@@ -77,7 +77,7 @@ shared_examples_for 'supporting Date' do
   end
 end
 
-shared_examples_for 'supporting Date autocasting' do
+shared_examples 'supporting Date autocasting' do
   before :all do
     setup_test_environment
   end

@@ -2,6 +2,6 @@ require File.expand_path(File.join(File.dirname(__FILE__), '..', 'spec_helper'))
 require 'data_objects/spec/shared/typecast/boolean_spec'
 
 describe 'DataObjects::Mysql with Boolean' do
-  it_should_behave_like 'supporting Boolean'
-  it_should_behave_like 'supporting Boolean autocasting'
+  it_behaves_like 'supporting Boolean'
+  it_behaves_like 'supporting Boolean autocasting'
 end

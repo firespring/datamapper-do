@@ -8,7 +8,7 @@ class ::CustomTextType
   end
 end
 
-shared_examples_for 'supporting other (unknown) type' do
+shared_examples 'supporting other (unknown) type' do
   before :all do
     setup_test_environment
   end

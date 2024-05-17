@@ -1,4 +1,4 @@
-shared_examples_for 'supporting BigDecimal' do
+shared_examples 'supporting BigDecimal' do
   before :all do
     setup_test_environment
   end
@@ -75,7 +75,7 @@ shared_examples_for 'supporting BigDecimal' do
   end
 end
 
-shared_examples_for 'supporting BigDecimal autocasting' do
+shared_examples 'supporting BigDecimal autocasting' do
   before :all do
     setup_test_environment
   end

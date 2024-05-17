@@ -8,7 +8,7 @@ ensure
   conn.close
 end
 
-shared_examples_for 'a Connection' do
+shared_examples 'a Connection' do
   before :all do
     setup_test_environment
   end
@@ -90,7 +90,7 @@ shared_examples_for 'a Connection' do
   end
 end
 
-shared_examples_for 'a Connection with authentication support' do
+shared_examples 'a Connection with authentication support' do
   before :all do
     %w(@driver @user @password @host @port @database).each do |ivar|
       raise "+#{ivar}+ should be defined in before block" unless instance_variable_get(ivar)
@@ -125,7 +125,7 @@ shared_examples_for 'a Connection with authentication support' do
   end
 end
 
-shared_examples_for 'a Connection allowing default database' do
+shared_examples 'a Connection allowing default database' do
   describe 'with a URI without a database' do
     it 'should connect properly' do
       conn = DataObjects::Connection.new("#{@driver}://#{@user}:#{@password}@#{@host}:#{@port}")
@@ -135,7 +135,7 @@ shared_examples_for 'a Connection allowing default database' do
 end
 
 if defined? JRUBY_VERSION
-  shared_examples_for 'a Connection with JDBC URL support' do
+  shared_examples 'a Connection with JDBC URL support' do
     it 'should work with JDBC URLs' do
       conn = DataObjects::Connection.new(CONFIG.jdbc_uri || "jdbc:#{CONFIG.uri.sub('jdbc:', '')}")
       test_connection(conn).should eq 1
@@ -143,7 +143,7 @@ if defined? JRUBY_VERSION
   end
 end
 
-shared_examples_for 'a Connection with SSL support' do
+shared_examples 'a Connection with SSL support' do
   if DataObjectsSpecHelpers.test_environment_supports_ssl?
     describe 'connecting with SSL' do
       it 'should connect securely' do
@@ -163,7 +163,7 @@ shared_examples_for 'a Connection with SSL support' do
   end
 end
 
-shared_examples_for 'a Connection via JDNI' do
+shared_examples 'a Connection via JDNI' do
   if defined? JRUBY_VERSION
     require 'java'
     begin

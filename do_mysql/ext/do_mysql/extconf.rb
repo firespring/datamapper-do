@@ -9,7 +9,7 @@ RbConfig::MAKEFILE_CONFIG['CC'] = ENV['CC'] if ENV['CC']
 # All instances of mysql_config on PATH ...
 def mysql_config_paths
   ENV['PATH'].split(File::PATH_SEPARATOR).collect do |path|
-    ["#{path}/mysql_config", "#{path}/mysql_config5"]
+    %W(#{path}/mysql_config #{path}/mysql_config5)
       .detect { |bin| File.exist?(bin) }
   end
 end

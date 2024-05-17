@@ -45,3 +45,6 @@ Gemfile.*
 *.iml
 nb-configuration.xml
 nbproject
+
+## RubyMine
+.idea/

@@ -1,4 +1,4 @@
-shared_examples_for 'supporting Nil' do
+shared_examples 'supporting Nil' do
   before :all do
     setup_test_environment
   end
@@ -36,7 +36,7 @@ shared_examples_for 'supporting Nil' do
   end
 end
 
-shared_examples_for 'supporting writing an Nil' do
+shared_examples 'supporting writing an Nil' do
   before :all do
     setup_test_environment
   end
@@ -70,7 +70,7 @@ shared_examples_for 'supporting writing an Nil' do
   end
 end
 
-shared_examples_for 'supporting Nil autocasting' do
+shared_examples 'supporting Nil autocasting' do
   before :all do
     setup_test_environment
   end

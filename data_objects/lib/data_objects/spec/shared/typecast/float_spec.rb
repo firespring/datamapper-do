@@ -1,4 +1,4 @@
-shared_examples_for 'supporting Float' do
+shared_examples 'supporting Float' do
   before :all do
     setup_test_environment
   end
@@ -76,7 +76,7 @@ shared_examples_for 'supporting Float' do
   end
 end
 
-shared_examples_for 'supporting Float autocasting' do
+shared_examples 'supporting Float autocasting' do
   before :all do
     setup_test_environment
   end

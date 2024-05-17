@@ -1,6 +1,6 @@
 JRUBY = RUBY_PLATFORM =~ /java/ unless defined?(JRUBY)
 
-shared_examples_for 'supporting DateTime' do
+shared_examples 'supporting DateTime' do
   before :all do
     setup_test_environment
   end
@@ -105,7 +105,7 @@ shared_examples_for 'supporting DateTime' do
   end
 end
 
-shared_examples_for 'supporting DateTime autocasting' do
+shared_examples 'supporting DateTime autocasting' do
   before :all do
     setup_test_environment
   end
