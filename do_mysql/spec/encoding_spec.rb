@@ -38,7 +38,7 @@ describe DataObjects::Mysql::Connection do
 
         it 'returns a UTF-8 encoded String' do
           expect(@values.first).to be_kind_of(String)
-          expect(@values.first.encoding.name).to
+          expect(@values.first.encoding.name).to eq 'UTF-8'
           expect(@values.first).to eq '😀'
         end
       end
