@@ -1,8 +1,3 @@
-begin
-  require 'fastthread'
-rescue LoadError
-  warn 'LoadError'
-end
 
 module DataObjects
   # An abstract connection to a DataObjects resource. The physical connection may be broken and re-established from time to time.
