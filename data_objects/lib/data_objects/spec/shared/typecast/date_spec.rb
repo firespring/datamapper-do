@@ -25,12 +25,12 @@ shared_examples 'supporting Date' do
         @reader.close
       end
 
-      it 'should return the correctly typed result' do
-        @values.first.should be_kind_of(Date)
+      it 'returns the correctly typed result' do
+        expect(@values.first).to be_kind_of(Date)
       end
 
-      it 'should return the correct result' do
-        @values.first.should == Date.civil(2008, 2, 14)
+      it 'returns the correct result' do
+        expect(@values.first).to eq Date.civil(2008, 2, 14)
       end
     end
 
@@ -47,12 +47,12 @@ shared_examples 'supporting Date' do
         @reader.close
       end
 
-      it 'should return a nil class' do
-        @values.first.should be_kind_of(NilClass)
+      it 'returns a nil class' do
+        expect(@values.first).to be_kind_of(NilClass)
       end
 
-      it 'should return nil' do
-        @values.first.should be_nil
+      it 'returns nil' do
+        expect(@values.first).to be_nil
       end
     end
   end
@@ -70,9 +70,9 @@ shared_examples 'supporting Date' do
       @reader.close
     end
 
-    it 'should return the correct entry' do
+    it 'returns the correct entry' do
       # Some of the drivers starts auto-incrementation from 0 not 1
-      @values.first.should(satisfy { |val| [1, 0].include?(val) })
+      expect(@values.first).to(satisfy { |val| [1, 0].include?(val) })
     end
   end
 end
@@ -102,12 +102,12 @@ shared_examples 'supporting Date autocasting' do
         @reader.close
       end
 
-      it 'should return the correctly typed result' do
-        @values.first.should be_kind_of(Date)
+      it 'returns the correctly typed result' do
+        expect(@values.first).to be_kind_of(Date)
       end
 
-      it 'should return the correct result' do
-        @values.first.should == Date.civil(2008, 2, 14)
+      it 'returns the correct result' do
+        expect(@values.first).to eq Date.civil(2008, 2, 14)
       end
     end
   end

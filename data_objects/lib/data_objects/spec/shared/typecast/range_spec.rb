@@ -20,10 +20,10 @@ shared_examples 'supporting Range' do
       @reader.close
     end
 
-    it 'should return correct number of rows' do
+    it 'returns correct number of rows' do
       counter  = 0
       counter += 1 while @reader.next!
-      counter.should == 4
+      expect(counter).to eq 4
     end
   end
 end

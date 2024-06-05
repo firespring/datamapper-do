@@ -23,13 +23,13 @@ shared_examples 'supporting Integer' do
         @reader.close
       end
 
-      it 'should return the correctly typed result' do
-        @values.first.should be_kind_of(Integer)
+      it 'returns the correctly typed result' do
+        expect(@values.first).to be_kind_of(Integer)
       end
 
-      it 'should return the correct result' do
+      it 'returns the correct result' do
         # Some of the drivers starts auto-incrementation from 0 not 1
-        @values.first.should(satisfy { |val| [1, 0].include?(val) })
+        expect(@values.first).to(satisfy { |val| [1, 0].include?(val) })
       end
     end
 
@@ -46,12 +46,12 @@ shared_examples 'supporting Integer' do
         @reader.close
       end
 
-      it 'should return the correctly typed result' do
-        @values.first.should be_kind_of(Integer)
+      it 'returns the correctly typed result' do
+        expect(@values.first).to be_kind_of(Integer)
       end
 
-      it 'should return the correct result' do
-        @values.first.should eq 13
+      it 'returns the correct result' do
+        expect(@values.first).to eq 13
       end
     end
   end
@@ -67,8 +67,8 @@ shared_examples 'supporting Integer' do
       @reader.close
     end
 
-    it 'should return the correct entry' do
-      @values.first.should eq 2
+    it 'returns the correct entry' do
+      expect(@values.first).to eq 2
     end
   end
 
@@ -85,8 +85,8 @@ shared_examples 'supporting Integer' do
       @reader.close
     end
 
-    it 'should return the correct entry' do
-      @values.first.should eq 2_147_483_648
+    it 'returns the correct entry' do
+      expect(@values.first).to eq 2_147_483_648
     end
   end
 end

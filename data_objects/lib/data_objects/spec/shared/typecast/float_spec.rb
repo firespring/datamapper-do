@@ -25,13 +25,13 @@ shared_examples 'supporting Float' do
         @reader.close
       end
 
-      it 'should return the correctly typed result' do
-        @values.first.should be_kind_of(Float)
+      it 'returns the correctly typed result' do
+        expect(@values.first).to be_kind_of(Float)
       end
 
-      it 'should return the correct result' do
+      it 'returns the correct result' do
         # Some of the drivers starts auto-incrementation from 0 not 1
-        @values.first.should(satisfy { |val| [1.0, 0.0].include?(val) })
+        expect(@values.first).to(satisfy { |val| [1.0, 0.0].include?(val) })
       end
     end
 
@@ -48,12 +48,12 @@ shared_examples 'supporting Float' do
         @reader.close
       end
 
-      it 'should return the correctly typed result' do
-        @values.first.should be_kind_of(NilClass)
+      it 'returns the correctly typed result' do
+        expect(@values.first).to be_kind_of(NilClass)
       end
 
-      it 'should return the correct result' do
-        @values.first.should be_nil
+      it 'returns the correct result' do
+        expect(@values.first).to be_nil
       end
     end
   end
@@ -69,9 +69,9 @@ shared_examples 'supporting Float' do
       @reader.close
     end
 
-    it 'should return the correct entry' do
+    it 'returns the correct entry' do
       # Some of the drivers starts auto-incrementation from 0 not 1
-      @values.first.should(satisfy { |val| [1, 2].include?(val) })
+      expect(@values.first).to(satisfy { |val| [1, 2].include?(val) })
     end
   end
 end
@@ -101,14 +101,14 @@ shared_examples 'supporting Float autocasting' do
         @reader.close
       end
 
-      it 'should return the correctly typed result' do
-        @values.first.should be_kind_of(Float)
-        @values.last.should be_kind_of(Float)
+      it 'returns the correctly typed result' do
+        expect(@values.first).to be_kind_of(Float)
+        expect(@values.last).to be_kind_of(Float)
       end
 
-      it 'should return the correct result' do
-        @values.first.should eq 13.4
-        BigDecimal(@values.last.to_s).round(2).should eq 10.23
+      it 'returns the correct result' do
+        expect(@values.first).to eq 13.4
+        expect(BigDecimal(@values.last.to_s).round(2)).to eq 10.23
       end
     end
   end

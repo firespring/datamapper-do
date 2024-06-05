@@ -25,12 +25,12 @@ shared_examples 'supporting Class' do
         @reader.close
       end
 
-      it 'should return the correctly typed result' do
-        @values.first.should be_kind_of(Class)
+      it 'returns the correctly typed result' do
+        expect(@values.first).to be_kind_of(Class)
       end
 
-      it 'should return the correct result' do
-        @values.first.should eq String
+      it 'returns the correct result' do
+        expect(@values.first).to eq String
       end
     end
   end
@@ -46,8 +46,8 @@ shared_examples 'supporting Class' do
       @reader.close
     end
 
-    it 'should return the correct entry' do
-      @values.first.should eq 'String'
+    it 'returns the correct entry' do
+      expect(@values.first).to eq 'String'
     end
   end
 end

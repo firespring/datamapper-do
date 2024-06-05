@@ -25,12 +25,12 @@ shared_examples 'supporting Boolean' do
         @reader.close
       end
 
-      it 'should return the correctly typed result' do
-        @values.first.should be_kind_of(FalseClass)
+      it 'returns the correctly typed result' do
+        expect(@values.first).to be_kind_of(FalseClass)
       end
 
-      it 'should return the correct result' do
-        @values.first.should eq false
+      it 'returns the correct result' do
+        expect(@values.first).to eq false
       end
     end
 
@@ -47,12 +47,12 @@ shared_examples 'supporting Boolean' do
         @reader.close
       end
 
-      it 'should return the correctly typed result' do
-        @values.first.should be_kind_of(TrueClass)
+      it 'returns the correctly typed result' do
+        expect(@values.first).to be_kind_of(TrueClass)
       end
 
-      it 'should return the correct result' do
-        @values.first.should be true
+      it 'returns the correct result' do
+        expect(@values.first).to be true
       end
     end
 
@@ -69,12 +69,12 @@ shared_examples 'supporting Boolean' do
         @reader.close
       end
 
-      it 'should return the correctly typed result' do
-        @values.first.should be_kind_of(NilClass)
+      it 'returns the correctly typed result' do
+        expect(@values.first).to be_kind_of(NilClass)
       end
 
-      it 'should return the correct result' do
-        @values.first.should be_nil
+      it 'returns the correct result' do
+        expect(@values.first).to be_nil
       end
     end
   end
@@ -90,8 +90,8 @@ shared_examples 'supporting Boolean' do
       @reader.close
     end
 
-    it 'should return the correct entry' do
-      @values.first.should eq 2
+    it 'returns the correct entry' do
+      expect(@values.first).to eq 2
     end
   end
 end
@@ -121,12 +121,12 @@ shared_examples 'supporting Boolean autocasting' do
         @reader.close
       end
 
-      it 'should return the correctly typed result' do
-        @values.first.should be_kind_of(FalseClass)
+      it 'returns the correctly typed result' do
+        expect(@values.first).to be_kind_of(FalseClass)
       end
 
-      it 'should return the correct result' do
-        @values.first.should eq false
+      it 'returns the correct result' do
+        expect(@values.first).to eq false
       end
     end
   end

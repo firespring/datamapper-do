@@ -23,12 +23,12 @@ shared_examples 'supporting String' do
         @reader.close
       end
 
-      it 'should return the correctly typed result' do
-        @values.first.should be_kind_of(String)
+      it 'returns the correctly typed result' do
+        expect(@values.first).to be_kind_of(String)
       end
 
-      it 'should return the correct result' do
-        @values.first.should eq 'W0000001'
+      it 'returns the correct result' do
+        expect(@values.first).to eq 'W0000001'
       end
     end
 
@@ -45,12 +45,12 @@ shared_examples 'supporting String' do
         @reader.close
       end
 
-      it 'should return the correctly typed result' do
-        @values.first.should be_kind_of(String)
+      it 'returns the correctly typed result' do
+        expect(@values.first).to be_kind_of(String)
       end
 
-      it 'should return the correct result' do
-        @values.first.should eq '0'
+      it 'returns the correct result' do
+        expect(@values.first).to eq '0'
       end
     end
   end
@@ -66,9 +66,9 @@ shared_examples 'supporting String' do
       @reader.close
     end
 
-    it 'should return the correct entry' do
+    it 'returns the correct entry' do
       # Some of the drivers starts auto-incrementation from 0 not 1
-      @values.first.should(satisfy { |val| [1, 2].include?(val) })
+      expect(@values.first).to(satisfy { |val| [1, 2].include?(val) })
     end
   end
 
@@ -81,29 +81,29 @@ shared_examples 'supporting String' do
         @n = 'N' if defined?(DataObjects::SqlServer::Connection) && @connection.is_a?(DataObjects::SqlServer::Connection)
       end
 
-      it 'should write a multibyte String' do
+      it 'writes a multibyte String' do
         @command = @connection.create_command('INSERT INTO users (name) VALUES(?)')
-        expect { @command.execute_non_query(name) }.not_to raise_error(DataObjects::DataError)
+        expect { @command.execute_non_query(name) }.not_to raise_error
       end
 
-      it 'should read back the multibyte String' do
+      it 'reads back the multibyte String' do
         @command = @connection.create_command('SELECT name FROM users WHERE name = ?')
         @reader = @command.execute_reader(name)
         @reader.next!
-        @reader.values.first.should eq name
+        expect(@reader.values.first).to eq name
         @reader.close
       end
 
-      it 'should write a multibyte String (without query parameters)' do
+      it 'writes a multibyte String (without query parameters)' do
         @command = @connection.create_command("INSERT INTO users (name) VALUES(#{@n}'#{name}')")
-        expect { @command.execute_non_query }.not_to raise_error(DataObjects::DataError)
+        expect { @command.execute_non_query }.not_to raise_error
       end
 
-      it 'should read back the multibyte String (without query parameters)' do
+      it 'reads back the multibyte String (without query parameters)' do
         @command = @connection.create_command("SELECT name FROM users WHERE name = #{@n}'#{name}'")
         @reader = @command.execute_reader
         @reader.next!
-        @reader.values.first.should eq name
+        expect(@reader.values.first).to eq name
         @reader.close
       end
     end
@@ -122,9 +122,9 @@ shared_examples 'supporting String' do
       @reader.close
     end
 
-    it 'should return the correct entry' do
+    it 'returns the correct entry' do
       # Some of the drivers starts auto-incrementation from 0 not 1
-      @values.first.should(satisfy { |val| [1, 2].include?(val) })
+      expect(@values.first).to(satisfy { |val| [1, 2].include?(val) })
     end
   end
 end
