@@ -66,7 +66,7 @@ void data_objects_debug(VALUE connection, VALUE string, struct timeval *start) {
   rb_funcall(connection, DO_ID_LOG, 1, message);
 }
 
-void data_objects_raise_error(VALUE self, const struct errcodes *errors, int errnum, VALUE message, VALUE query, VALUE state) {
+_Noreturn void data_objects_raise_error(VALUE self, const struct errcodes *errors, int errnum, VALUE message, VALUE query, VALUE state) {
   const char *exception_type = "SQLError";
   const struct errcodes *e;
   VALUE uri, exception;

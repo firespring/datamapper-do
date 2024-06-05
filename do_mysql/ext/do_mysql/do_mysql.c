@@ -650,7 +650,7 @@ VALUE do_mysql_cReader_next(VALUE self) {
   return Qtrue;
 }
 
-void Init_do_mysql() {
+void Init_do_mysql(void) {
   data_objects_common_init();
 
   // Top Level Module that all the classes live under
