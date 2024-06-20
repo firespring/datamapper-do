@@ -5,7 +5,11 @@ gemspec
 group :development do # Development dependencies (as in the gemspec)
   gem 'pry'
   gem 'pry-byebug'
-  gem 'rake'
-  gem 'rspec'
+  gem 'rake', '~> 13.1'
+  gem 'rake-compiler', '~> 1.2'
+  gem 'rspec', '~> 3.13'
+  gem 'rspec-its'
+  gem 'rubocop'
+  gem 'simplecov'
   gem 'yard'
 end
