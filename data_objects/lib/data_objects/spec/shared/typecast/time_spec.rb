@@ -25,12 +25,12 @@ shared_examples 'supporting Time' do
         @reader.close
       end
 
-      it 'should return the correctly typed result' do
-        @values.first.should be_kind_of(Time)
+      it 'returns the correctly typed result' do
+        expect(@values.first).to be_kind_of(Time)
       end
 
-      it 'should return the correct result' do
-        @values.first.should == Time.local(2008, 2, 14)
+      it 'returns the correct result' do
+        expect(@values.first).to eq Time.local(2008, 2, 14)
       end
     end
 
@@ -47,12 +47,12 @@ shared_examples 'supporting Time' do
         @reader.close
       end
 
-      it 'should return a nil class' do
-        @values.first.should be_kind_of(NilClass)
+      it 'returns a nil class' do
+        expect(@values.first).to be_kind_of(NilClass)
       end
 
-      it 'should return nil' do
-        @values.first.should be_nil
+      it 'returns nil' do
+        expect(@values.first).to be_nil
       end
     end
   end
@@ -70,9 +70,9 @@ shared_examples 'supporting Time' do
       @reader.close
     end
 
-    it 'should return the correct entry' do
+    it 'returns the correct entry' do
       # Some of the drivers starts auto-incrementation from 0 not 1
-      @values.first.should(satisfy { |val| [1, 0].include?(val) })
+      expect(@values.first).to(satisfy { |val| [1, 0].include?(val) })
     end
   end
 end
@@ -102,10 +102,10 @@ shared_examples 'supporting sub second Time' do
     @connection.close
   end
 
-  it 'should handle variable subsecond lengths properly' do
-    @values.first.to_f.should be_within(0.00002).of(Time.at(1_292_452_328, 493_770).to_f)
+  it 'handles variable subsecond lengths properly' do
+    expect(@values.first.to_f).to be_within(0.00002).of(Time.at(1_292_452_328, 493_770).to_f)
     @reader.next!
     @values = @reader.values
-    @values.first.to_f.should be_within(0.00002).of(Time.at(1_292_452_348, 942_694).to_f)
+    expect(@values.first.to_f).to be_within(0.00002).of(Time.at(1_292_452_348, 942_694).to_f)
   end
 end

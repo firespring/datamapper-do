@@ -16,29 +16,29 @@ shared_examples 'a Reader' do
     @connection.close
   end
 
-  it { @reader.should respond_to(:fields) }
+  it { expect(@reader).to respond_to(:fields) }
 
   describe 'fields' do
-    it 'should return the correct fields in the reader' do
+    it 'returns the correct fields in the reader' do
       # we downcase the field names as some drivers such as do_derby, do_h2,
       # do_hsqldb, do_oracle return the field names as uppercase
-      @reader.fields.should be_array_case_insensitively_equal_to(%w(code name))
+      expect(@reader.fields).to be_array_case_insensitively_equal_to(%w(code name))
     end
 
-    it 'should return the field alias as the name, when the SQL AS keyword is specified' do
+    it 'returns the field alias as the name, when the SQL AS keyword is specified' do
       reader = @connection.create_command('SELECT code AS codigo, name AS nombre FROM widgets WHERE ad_description = ? order by id')
                           .execute_reader('Buy this product now!')
-      reader.fields.should_not be_array_case_insensitively_equal_to(%w(code name))
-      reader.fields.should     be_array_case_insensitively_equal_to(%w(codigo nombre))
+      expect(reader.fields).not_to be_array_case_insensitively_equal_to(%w(code name))
+      expect(reader.fields).to be_array_case_insensitively_equal_to(%w(codigo nombre))
       reader.close
     end
   end
 
-  it { @reader.should respond_to(:values) }
+  it { expect(@reader).to respond_to(:values) }
 
   describe 'values' do
     describe 'when the reader is uninitialized' do
-      it 'should raise an error' do
+      it 'raises an error' do
         expect { @reader.values }.to raise_error(DataObjects::DataError)
       end
     end
@@ -48,8 +48,8 @@ shared_examples 'a Reader' do
         @reader.next!
       end
 
-      it 'should return the correct first set of in the reader' do
-        @reader.values.should eq ['W0000001', 'Widget 1']
+      it 'returns the correct first set of in the reader' do
+        expect(@reader.values).to eq ['W0000001', 'Widget 1']
       end
     end
 
@@ -59,8 +59,8 @@ shared_examples 'a Reader' do
         @reader.next!
       end
 
-      it 'should return the correct first set of in the reader' do
-        @reader.values.should eq ['W0000002', 'Widget 2']
+      it 'returns the correct first set of in the reader' do
+        expect(@reader.values).to eq ['W0000002', 'Widget 2']
       end
     end
 
@@ -69,18 +69,18 @@ shared_examples 'a Reader' do
         while @reader.next!; end
       end
 
-      it 'should raise an error again' do
+      it 'raises an error again' do
         expect { @reader.values }.to raise_error(DataObjects::DataError)
       end
     end
   end
 
-  it { @reader.should respond_to(:close) }
+  it { expect(@reader).to respond_to(:close) }
 
   describe 'close' do
     describe 'on an open reader' do
-      it 'should return true' do
-        @reader.close.should be true
+      it 'returns true' do
+        expect(@reader.close).to be true
       end
     end
 
@@ -89,18 +89,18 @@ shared_examples 'a Reader' do
         @reader.close
       end
 
-      it 'should return false' do
-        @reader.close.should be false
+      it 'returns false' do
+        expect(@reader.close).to be false
       end
     end
   end
 
-  it { @reader.should respond_to(:next!) }
+  it { expect(@reader).to respond_to(:next!) }
 
   describe 'next!' do
     describe 'successfully moving the cursor initially' do
-      it 'should return true' do
-        @reader.next!.should be true
+      it 'returns true' do
+        expect(@reader.next!).to be true
       end
     end
 
@@ -109,10 +109,10 @@ shared_examples 'a Reader' do
         @reader.next!
       end
 
-      it 'should move the cursor to the next value' do
-        @reader.values.should eq ['W0000001', 'Widget 1']
-        -> { @reader.next! }.should(change { @reader.values })
-        @reader.values.should eq ['W0000002', 'Widget 2']
+      it 'moves the cursor to the next value' do
+        expect(@reader.values).to eq ['W0000001', 'Widget 1']
+        expect { @reader.next! }.to(change { @reader.values })
+        expect(@reader.values).to eq ['W0000002', 'Widget 2']
       end
     end
 
@@ -121,60 +121,60 @@ shared_examples 'a Reader' do
         while @reader.next!; end
       end
 
-      it 'should return false when the end is reached' do
-        @reader.next!.should be false
+      it 'returns false when the end is reached' do
+        expect(@reader.next!).to be false
       end
     end
   end
 
-  it { @reader.should respond_to(:field_count) }
+  it { expect(@reader).to respond_to(:field_count) }
 
   describe 'field_count' do
-    it 'should count the number of fields' do
-      @reader.field_count.should eq 2
+    it 'counts the number of fields' do
+      expect(@reader.field_count).to eq 2
     end
   end
 
-  it { @reader.should respond_to(:values) }
+  it { expect(@reader).to respond_to(:values) }
 
   describe 'each' do
-    it 'should yield each row to the block for multiple columns' do
+    it 'yields each row to the block for multiple columns' do
       rows_yielded = 0
       @reader.each do |row|
-        row.should respond_to(:[])
+        expect(row).to respond_to(:[])
 
-        row.size.should eq 2
+        expect(row.size).to eq 2
 
         # the field names need to be case insensitive as some drivers such as
         # do_derby, do_h2, do_hsqldb return the field names as uppercase
-        (row['name'] || row['NAME']).should be_kind_of(String)
-        (row['code'] || row['CODE']).should be_kind_of(String)
+        expect(row['name'] || row['NAME']).to be_kind_of(String)
+        expect(row['code'] || row['CODE']).to be_kind_of(String)
 
         rows_yielded += 1
       end
-      rows_yielded.should eq 15
+      expect(rows_yielded).to eq 15
     end
 
-    it 'should yield each row to the block for a single column' do
+    it 'yields each row to the block for a single column' do
       rows_yielded = 0
       @reader2.each do |row|
-        row.should respond_to(:[])
+        expect(row).to respond_to(:[])
 
-        row.size.should eq 1
+        expect(row.size).to eq 1
 
         # the field names need to be case insensitive as some drivers such as
         # do_derby, do_h2, do_hsqldb return the field names as uppercase
-        (row['code'] || row['CODE']).should be_kind_of(String)
+        expect(row['code'] || row['CODE']).to be_kind_of(String)
 
         rows_yielded += 1
       end
-      rows_yielded.should eq 15
+      expect(rows_yielded).to eq 15
     end
 
-    it 'should return the reader' do
-      @reader.each do |_row|
+    it 'returns the reader' do
+      expect(@reader.each do |_row|
         # empty block
-      end.should equal(@reader)
+      end).to equal(@reader)
     end
   end
 end

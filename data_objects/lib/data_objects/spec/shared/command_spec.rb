@@ -17,9 +17,9 @@ shared_examples 'a Command' do
     @connection.close
   end
 
-  it { @command.should be_kind_of(DataObjects::Command) }
+  it { expect(@command).to be_kind_of(DataObjects::Command) }
 
-  it { @command.should respond_to(:execute_non_query) }
+  it { expect(@command).to respond_to(:execute_non_query) }
 
   describe 'execute_non_query' do
     describe 'with an invalid statement' do
@@ -27,24 +27,24 @@ shared_examples 'a Command' do
         @invalid_command = @connection.create_command('INSERT INTO non_existent_table (tester) VALUES (1)')
       end
 
-      it 'should raise an error on an invalid query' do
+      it 'raises an error on an invalid query' do
         expect { @invalid_command.execute_non_query }.to raise_error(DataObjects::SQLError)
       end
 
-      it 'should raise an error with too many binding parameters' do
+      it 'raises an error with too many binding parameters' do
         expect { @arg_command.execute_non_query('Too', Date.today, 'Many') }.to raise_error(ArgumentError,
                                                                                             /Binding mismatch: 3 for 2/)
       end
 
-      it 'should raise an error with too few binding parameters' do
+      it 'raises an error with too few binding parameters' do
         expect { @arg_command.execute_non_query('Few') }.to raise_error(ArgumentError,
                                                                         /Binding mismatch: 1 for 2/)
       end
     end
 
     describe 'with a valid statement' do
-      it 'should not raise an error with an explicit nil as parameter' do
-        expect { @arg_command.execute_non_query(nil, nil) }.not_to raise_error(ArgumentError)
+      it 'does not raise an error with an explicit nil as parameter' do
+        expect { @arg_command.execute_non_query(nil, nil) }.not_to raise_error
       end
     end
 
@@ -53,13 +53,13 @@ shared_examples 'a Command' do
         @command_with_quotes = @connection.create_command("INSERT INTO users (name) VALUES ('will it work? ')")
       end
 
-      it 'should not raise an error' do
-        expect { @command_with_quotes.execute_non_query }.not_to raise_error(ArgumentError)
+      it 'does not raise an error' do
+        expect { @command_with_quotes.execute_non_query }.not_to raise_error
       end
     end
   end
 
-  it { @command.should respond_to(:execute_reader) }
+  it { expect(@command).to respond_to(:execute_reader) }
 
   describe 'execute_reader' do
     describe 'with an invalid reader' do
@@ -67,33 +67,33 @@ shared_examples 'a Command' do
         @invalid_reader = @connection.create_command('SELECT * FROM non_existent_widgets WHERE ad_description = ? AND white_paper_text = ?')
       end
 
-      it 'should raise an error on an invalid query' do
+      it 'raises an error on an invalid query' do
         # FIXME: JRuby (and MRI): Should this be an ArgumentError or DataObjects::SQLError?
-        expect { @invalid_reader.execute_reader }.to raise_error # (ArgumentError, DataObjects::SQLError)
+        expect { @invalid_reader.execute_reader }.to raise_error(DataObjects::SQLError) # (ArgumentError, DataObjects::SQLError)
       end
 
-      it 'should raise an error with too many few binding parameters' do
+      it 'raises an error with too many few binding parameters' do
         expect { @arg_reader.execute_reader('Too', 'Many', 'Args') }.to raise_error(ArgumentError,
                                                                                     /Binding mismatch: 3 for 2/)
       end
 
-      it 'should raise an error with too few binding parameters' do
+      it 'raises an error with too few binding parameters' do
         expect { @arg_reader.execute_reader('Few') }.to raise_error(ArgumentError,
                                                                     /Binding mismatch: 1 for 2/)
       end
     end
 
     describe 'with a valid reader' do
-      it 'should not raise an error with an explicit nil as parameter' do
-        expect { @arg_reader.execute_reader(nil, nil) }.not_to raise_error(ArgumentError)
+      it 'does not raise an error with an explicit nil as parameter' do
+        expect { @arg_reader.execute_reader(nil, nil) }.not_to raise_error
       end
 
       unless defined?(JRUBY)
         it 'returns an empty reader if the query does not return a result' do
           runs_command = @connection.create_command("UPDATE widgets SET name = '' WHERE name = ''")
           res = runs_command.execute_reader
-          res.fields.should eq []
-          res.next!.should be false
+          expect(res.fields).to eq []
+          expect(res.next!).to be false
         end
       end
     end
@@ -103,13 +103,13 @@ shared_examples 'a Command' do
         @reader_with_quotes = @connection.create_command('SELECT code AS "code?", name FROM widgets WHERE ad_description = ?')
       end
 
-      it 'should not raise an error' do
-        expect { @reader_with_quotes.execute_reader(nil) }.not_to raise_error(ArgumentError)
+      it 'does not raise an error' do
+        expect { @reader_with_quotes.execute_reader(nil) }.not_to raise_error
       end
     end
   end
 
-  it { @command.should respond_to(:set_types) }
+  it { expect(@command).to respond_to(:set_types) }
 
   describe 'set_types' do
     describe 'is invalid when used with a statement' do
@@ -117,19 +117,19 @@ shared_examples 'a Command' do
         @command.set_types(String)
       end
 
-      it 'should raise an error when types are set' do
+      it 'raises an error when types are set' do
         expect { @arg_command.execute_non_query('Few') }.to raise_error(ArgumentError)
       end
     end
 
     describe 'with an invalid reader' do
-      it 'should raise an error with too few types' do
+      it 'raises an error with too few types' do
         @reader.set_types(String)
         expect { @reader.execute_reader('One parameter') }.to raise_error(ArgumentError,
                                                                           /Field-count mismatch. Expected 1 fields, but the query yielded 2/)
       end
 
-      it 'should raise an error with too many types' do
+      it 'raises an error with too many types' do
         @reader.set_types(String, String, BigDecimal)
         expect { @reader.execute_reader('One parameter') }.to raise_error(ArgumentError,
                                                                           /Field-count mismatch. Expected 3 fields, but the query yielded 2/)
@@ -137,34 +137,34 @@ shared_examples 'a Command' do
     end
 
     describe 'with a valid reader' do
-      it 'should not raise an error with correct number of types' do
+      it 'does not raise an error with correct number of types' do
         @reader.set_types(String, String)
-        expect { @result = @reader.execute_reader('Buy this product now!') }.not_to raise_error(ArgumentError)
-        expect { @result.next!  }.not_to raise_error(DataObjects::DataError)
-        expect { @result.values }.not_to raise_error(DataObjects::DataError)
+        expect { @result = @reader.execute_reader('Buy this product now!') }.not_to raise_error
+        expect { @result.next!  }.not_to raise_error
+        expect { @result.values }.not_to raise_error
         @result.close
       end
 
-      it 'should also support old style array argument types' do
+      it 'also supports old style array argument types' do
         @reader.set_types([String, String])
-        expect { @result = @reader.execute_reader('Buy this product now!') }.not_to raise_error(ArgumentError)
-        expect { @result.next!  }.not_to raise_error(DataObjects::DataError)
-        expect { @result.values }.not_to raise_error(DataObjects::DataError)
+        expect { @result = @reader.execute_reader('Buy this product now!') }.not_to raise_error
+        expect { @result.next!  }.not_to raise_error
+        expect { @result.values }.not_to raise_error
         @result.close
       end
 
-      it 'should allow subtype types' do
+      it 'allows subtype types' do
         class MyString < String; end
         @reader.set_types(MyString, String)
-        expect { @result = @reader.execute_reader('Buy this product now!') }.not_to raise_error(ArgumentError)
-        expect { @result.next!  }.not_to raise_error(DataObjects::DataError)
-        expect { @result.values }.not_to raise_error(DataObjects::DataError)
+        expect { @result = @reader.execute_reader('Buy this product now!') }.not_to raise_error
+        expect { @result.next!  }.not_to raise_error
+        expect { @result.values }.not_to raise_error
         @result.close
       end
     end
   end
 
-  it { @command.should respond_to(:to_s) }
+  it { expect(@command).to respond_to(:to_s) }
 
   describe 'to_s' do
     # Tests not implemented
@@ -202,9 +202,9 @@ shared_examples 'a Command with async' do
       @finish = Time.now
     end
 
-    it 'should finish within 2 seconds' do
+    it 'finishes within 2 seconds' do
       pending_if("Ruby on Windows doesn't support asynchronous operations", WINDOWS) do
-        (@finish - @start).should < 2
+        expect(@finish - @start).to be < 2
       end
     end
   end

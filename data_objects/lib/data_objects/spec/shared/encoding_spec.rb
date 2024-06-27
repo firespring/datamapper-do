@@ -8,10 +8,10 @@ shared_examples 'a driver supporting different encodings' do
       @connection.close
     end
 
-    it { @connection.should respond_to(:character_set) }
+    it { expect(@connection).to respond_to(:character_set) }
 
     it 'uses utf8 by default' do
-      @connection.character_set.should eq 'UTF-8'
+      expect(@connection.character_set).to eq 'UTF-8'
     end
 
     describe 'sets the character set through the URI' do
@@ -24,7 +24,7 @@ shared_examples 'a driver supporting different encodings' do
 
       after { @latin1_connection.close }
 
-      it { @latin1_connection.character_set.should eq 'ISO-8859-1' }
+      it { expect(@latin1_connection.character_set).to eq 'ISO-8859-1' }
     end
 
     describe 'uses UTF-8 when an invalid encoding is given' do
@@ -36,7 +36,7 @@ shared_examples 'a driver supporting different encodings' do
 
       after { @latin1_connection.close }
 
-      it { @latin1_connection.character_set.should eq 'UTF-8' }
+      it { expect(@latin1_connection.character_set).to eq 'UTF-8' }
     end
   end
 end
@@ -69,11 +69,11 @@ shared_examples 'returning correctly encoded strings for the default database en
           @reader.close
         end
 
-        it 'should return UTF-8 encoded String' do
-          @values.first.should be_kind_of(String)
-          @values.first.encoding.name.should eq 'UTF-8'
-          @values.last.should be_kind_of(String)
-          @values.last.encoding.name.should eq 'UTF-8'
+        it 'returns UTF-8 encoded String' do
+          expect(@values.first).to be_kind_of(String)
+          expect(@values.first.encoding.name).to eq 'UTF-8'
+          expect(@values.last).to be_kind_of(String)
+          expect(@values.last.encoding.name).to eq 'UTF-8'
         end
       end
 
@@ -90,9 +90,9 @@ shared_examples 'returning correctly encoded strings for the default database en
           @reader.close
         end
 
-        it 'should return ASCII-8BIT encoded ByteArray' do
-          @values.first.should be_kind_of(Extlib::ByteArray)
-          @values.first.encoding.name.should eq 'ASCII-8BIT'
+        it 'returns ASCII-8BIT encoded ByteArray' do
+          expect(@values.first).to be_kind_of(Extlib::ByteArray)
+          expect(@values.first.encoding.name).to eq 'ASCII-8BIT'
         end
       end
     end
@@ -130,11 +130,11 @@ shared_examples 'returning correctly encoded strings for the default internal en
           @reader.close
         end
 
-        it 'should return ISO-8859-1 encoded String' do
-          @values.first.should be_kind_of(String)
-          @values.first.encoding.name.should eq 'ISO-8859-1'
-          @values.last.should be_kind_of(String)
-          @values.last.encoding.name.should eq 'ISO-8859-1'
+        it 'returns ISO-8859-1 encoded String' do
+          expect(@values.first).to be_kind_of(String)
+          expect(@values.first.encoding.name).to eq 'ISO-8859-1'
+          expect(@values.last).to be_kind_of(String)
+          expect(@values.last.encoding.name).to eq 'ISO-8859-1'
         end
       end
 
@@ -151,9 +151,9 @@ shared_examples 'returning correctly encoded strings for the default internal en
           @reader.close
         end
 
-        it 'should return ASCII-8BIT encoded ByteArray' do
-          @values.first.should be_kind_of(Extlib::ByteArray)
-          @values.first.encoding.name.should eq 'ASCII-8BIT'
+        it 'returns ASCII-8BIT encoded ByteArray' do
+          expect(@values.first).to be_kind_of(Extlib::ByteArray)
+          expect(@values.first.encoding.name).to eq 'ASCII-8BIT'
         end
       end
     end

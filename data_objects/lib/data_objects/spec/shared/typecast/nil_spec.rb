@@ -25,12 +25,12 @@ shared_examples 'supporting Nil' do
         @reader.close
       end
 
-      it 'should return the correctly typed result' do
-        @values.first.should be_kind_of(NilClass)
+      it 'returns the correctly typed result' do
+        expect(@values.first).to be_kind_of(NilClass)
       end
 
-      it 'should return the correct result' do
-        @values.first.should.nil?
+      it 'returns the correct result' do
+        expect(@values.first).to be_nil
       end
     end
   end
@@ -63,8 +63,8 @@ shared_examples 'supporting writing an Nil' do
         @reader.close
       end
 
-      it 'should return the correct entry' do
-        @reader.next!.should be false
+      it 'returns the correct entry' do
+        expect(@reader.next!).to be false
       end
     end
   end
@@ -95,12 +95,12 @@ shared_examples 'supporting Nil autocasting' do
         @reader.close
       end
 
-      it 'should return the correctly typed result' do
-        @values.first.should be_kind_of(NilClass)
+      it 'returns the correctly typed result' do
+        expect(@values.first).to be_kind_of(NilClass)
       end
 
-      it 'should return the correct result' do
-        @values.first.should.nil?
+      it 'returns the correct result' do
+        expect(@values.first).to be_nil
       end
     end
   end

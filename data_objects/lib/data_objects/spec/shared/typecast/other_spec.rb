@@ -34,8 +34,8 @@ shared_examples 'supporting other (unknown) type' do
       @reader.close
     end
 
-    it 'should return the correct entry' do
-      @values.first.should == 'Buy this product now!'
+    it 'returns the correct entry' do
+      expect(@values.first).to eq 'Buy this product now!'
     end
   end
 end

@@ -27,14 +27,14 @@ shared_examples 'supporting DateTime' do
         @reader.close
       end
 
-      it 'should return the correctly typed result' do
-        @values.first.should be_kind_of(DateTime)
+      it 'returns the correctly typed result' do
+        expect(@values.first).to be_kind_of(DateTime)
       end
 
-      it 'should return the correct result' do
+      it 'returns the correct result' do
         date = @values.first
         local_offset = Rational(Time.local(2008, 2, 14).utc_offset, 86_400)
-        date.should eq DateTime.civil(2008, 2, 14, 0o0, 31, 12, local_offset)
+        expect(date).to eq DateTime.civil(2008, 2, 14, 0o0, 31, 12, local_offset)
       end
     end
 
@@ -51,12 +51,12 @@ shared_examples 'supporting DateTime' do
         @reader.close
       end
 
-      it 'should return a nil class' do
-        @values.first.should be_kind_of(NilClass)
+      it 'returns a nil class' do
+        expect(@values.first).to be_kind_of(NilClass)
       end
 
-      it 'should return nil' do
-        @values.first.should be_nil
+      it 'returns nil' do
+        expect(@values.first).to be_nil
       end
     end
 
@@ -75,12 +75,12 @@ shared_examples 'supporting DateTime' do
         @reader.close
       end
 
-      it 'should return the correct offset in Feb' do
-        (@feb_row.first.offset * 86_400).to_i.should eq Time.local(2008, 2, 14, 0, 31, 12).utc_offset
+      it 'returns the correct offset in Feb' do
+        expect((@feb_row.first.offset * 86_400).to_i).to eq Time.local(2008, 2, 14, 0, 31, 12).utc_offset
       end
 
-      it 'should return the correct offset in Jul' do
-        (@jul_row.first.offset * 86_400).to_i.should eq Time.local(2008, 7, 14, 0, 31, 12).utc_offset
+      it 'returns the correct offset in Jul' do
+        expect((@jul_row.first.offset * 86_400).to_i).to eq Time.local(2008, 7, 14, 0, 31, 12).utc_offset
       end
     end
   end
@@ -98,9 +98,9 @@ shared_examples 'supporting DateTime' do
       @reader.close
     end
 
-    it 'should return the correct entry' do
+    it 'returns the correct entry' do
       # Some of the drivers starts auto-incrementation from 0 not 1
-      @values.first.should(satisfy { |val| [0, 1].include?(val) })
+      expect(@values.first).to(satisfy { |val| [0, 1].include?(val) })
     end
   end
 end
@@ -130,12 +130,12 @@ shared_examples 'supporting DateTime autocasting' do
         @reader.close
       end
 
-      it 'should return the correctly typed result' do
-        @values.first.should be_kind_of(DateTime)
+      it 'returns the correctly typed result' do
+        expect(@values.first).to be_kind_of(DateTime)
       end
 
-      it 'should return the correct result' do
-        @values.first.should eq Time.local(2008, 2, 14, 0o0, 31, 12).send(:to_datetime)
+      it 'returns the correct result' do
+        expect(@values.first).to eq Time.local(2008, 2, 14, 0o0, 31, 12).send(:to_datetime)
       end
     end
   end

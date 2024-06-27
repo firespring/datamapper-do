@@ -23,12 +23,12 @@ shared_examples 'supporting ByteArray' do
         @reader.close
       end
 
-      it 'should return the correctly typed result' do
-        @values.first.should be_kind_of(Extlib::ByteArray)
+      it 'returns the correctly typed result' do
+        expect(@values.first).to be_kind_of(Extlib::ByteArray)
       end
 
-      it 'should return the correct result' do
-        @values.first.should == "CAD \001 \000 DRAWING"
+      it 'returns the correct result' do
+        expect(@values.first).to eq "CAD \001 \000 DRAWING"
       end
     end
 
@@ -45,12 +45,12 @@ shared_examples 'supporting ByteArray' do
         @reader.close
       end
 
-      it 'should return the correctly typed result' do
-        @values.first.should be_kind_of(Extlib::ByteArray)
+      it 'returns the correctly typed result' do
+        expect(@values.first).to be_kind_of(Extlib::ByteArray)
       end
 
-      it 'should return the correct result' do
-        @values.first.should == "CAD \001 \000 DRAWING"
+      it 'returns the correct result' do
+        expect(@values.first).to eq "CAD \001 \000 DRAWING"
       end
     end
   end
@@ -68,9 +68,9 @@ shared_examples 'supporting ByteArray' do
       @reader.close
     end
 
-    it 'should return the correct entry' do
+    it 'returns the correct entry' do
       # Some of the drivers starts auto-incrementation from 0 not 1
-      @values.first.should == 'Buy this product now!'
+      expect(@values.first).to eq 'Buy this product now!'
     end
   end
 end

@@ -91,7 +91,6 @@ $CFLAGS << ' -DHAVE_NO_DATETIME_NEWBANG' unless DateTime.respond_to?(:new!)
 
 $CFLAGS << ' -Wall '
 
-$CFLAGS << ' -DRUBY_LESS_THAN_186' if RUBY_VERSION < '1.8.6'
 # rubocop:enable Style/GlobalVars
 
 create_makefile('do_mysql/do_mysql')

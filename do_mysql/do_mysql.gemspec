@@ -21,7 +21,6 @@ Gem::Specification.new do |s|
     tasks/spec.rake tasks/ssl.rake
   )
   s.require_paths = ['lib']
-  s.rubyforge_project = 'dorb'
   s.summary = 'DataObjects MySQL Driver'
 
   if s.respond_to? :specification_version
