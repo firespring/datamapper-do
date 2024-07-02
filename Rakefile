@@ -4,30 +4,19 @@ require 'rake'
 require 'rubygems/package_task'
 
 ROOT     = Pathname(__FILE__).dirname.expand_path
-JRUBY    = RUBY_PLATFORM =~ /java/
-IRONRUBY = defined?(RUBY_ENGINE) && RUBY_ENGINE == 'ironruby'
-WINDOWS  = Gem.win_platform? || (JRUBY && ENV_JAVA['os.name'] =~ /windows/i)
-SUDO     = WINDOWS ? '' : ('sudo' unless ENV['SUDOLESS'])
+SUDO     = 'sudo' unless ENV['SUDOLESS']
 
 # RCov is run by default, except on the JRuby and IronRuby platforms, or if NO_RCOV env is true
-RUN_RCOV = if JRUBY || IRONRUBY
-             false
-           else
-             (ENV.key?('NO_RCOV') ? ENV['NO_RCOV'] != 'true' : true)
-           end
+RUN_RCOV = (ENV.key?('NO_RCOV') ? ENV['NO_RCOV'] != 'true' : true)
 
-jruby_projects = %w(do_jdbc do_derby do_h2 do_hsqldb do_openedge)
-projects = %w(data_objects)
-projects += %w(do_mysql do_postgres do_sqlite3 do_sqlserver do_oracle)
-projects += jruby_projects if JRUBY
-
+projects = %w(data_objects do_mysql do_sqlite3)
 def rake(cmd)
   ruby "-S rake #{cmd}", verbose: false
 end
 
 desc 'Release all do gems'
 task :release do
-  (jruby_projects + projects).uniq.each do |dir|
+  (projects).uniq.each do |dir|
     Dir.chdir(dir) { rake 'release_all' }
   end
 end
@@ -43,21 +32,11 @@ task default: [:spec]
 
 desc 'Run all the specs for the subprojects'
 task :spec do
-  commands = [
-    'mysql -u root -e "create database do_test;"',
-    'psql  -c "create database do_test;" -U postgres'
-  ]
+  commands = ['mysql -u root -e "create database do_test;"']
 
-  commands.each do |command|
-    `#{command}`
-  end
+  commands.each { |command| `#{command}` }
 
-  spec_projects = %w(data_objects do_mysql do_postgres do_sqlite3)
-  if JRUBY
-    spec_projects += %w(do_derby do_h2 do_hsqldb)
-    Dir.chdir('do_jdbc') { rake :compile }
-  end
-
+  spec_projects = %w(data_objects do_mysql do_sqlite3)
   spec_projects.each do |gem_name|
     Dir.chdir(gem_name) { rake :spec }
   end
@@ -75,7 +54,7 @@ task :bump do
     File.delete f
   end
 
-  Dir['**/*.gemspec', '**/pom.xml', '**/version.rb', '**/compile.rake', '**/Gemfile'].each do |filename|
+  Dir['**/*.gemspec', '**/version.rb', '**/compile.rake', '**/Gemfile'].each do |filename|
     text = File.read(filename)
     out  = text.gsub(/#{old_version}/, new_version)
     File.open(filename, 'w') { |file| file << out }
@@ -85,7 +64,7 @@ end
 tasks.each do |name, description|
   desc description
   task name do
-    (jruby_projects + projects).each do |gem_name|
+    projects.each do |gem_name|
       Dir.chdir(gem_name) { rake name }
     end
   end
