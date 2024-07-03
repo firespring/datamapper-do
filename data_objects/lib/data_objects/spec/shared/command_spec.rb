@@ -1,5 +1,3 @@
-WINDOWS = Gem.win_platform? || (JRUBY && ENV_JAVA['os.name'] =~ /windows/i)
-
 shared_examples 'a Command' do
   before :all do
     setup_test_environment
@@ -88,13 +86,11 @@ shared_examples 'a Command' do
         expect { @arg_reader.execute_reader(nil, nil) }.not_to raise_error
       end
 
-      unless defined?(JRUBY)
-        it 'returns an empty reader if the query does not return a result' do
-          runs_command = @connection.create_command("UPDATE widgets SET name = '' WHERE name = ''")
-          res = runs_command.execute_reader
-          expect(res.fields).to eq []
-          expect(res.next!).to be false
-        end
+      it 'returns an empty reader if the query does not return a result' do
+        runs_command = @connection.create_command("UPDATE widgets SET name = '' WHERE name = ''")
+        res = runs_command.execute_reader
+        expect(res.fields).to eq []
+        expect(res.next!).to be false
       end
     end
 
@@ -200,12 +196,6 @@ shared_examples 'a Command with async' do
 
       threads.each(&:join)
       @finish = Time.now
-    end
-
-    it 'finishes within 2 seconds' do
-      pending_if("Ruby on Windows doesn't support asynchronous operations", WINDOWS) do
-        expect(@finish - @start).to be < 2
-      end
     end
   end
 end

@@ -3,5 +3,5 @@ require 'data_objects/spec/shared/typecast/time_spec'
 
 describe 'DataObjects::Sqlite3 with Time' do
   it_should_behave_like 'supporting Time'
-  it_should_behave_like 'supporting sub second Time' unless JRUBY
+  it_should_behave_like 'supporting sub second Time'
 end
