@@ -27,11 +27,8 @@ Gem::Specification.new do |s|
   s.summary = 'DataObjects Sqlite3 Driver'
 
   if s.respond_to? :specification_version
-
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0')
       s.add_runtime_dependency('data_objects', ['= 0.10.17'])
-      s.add_development_dependency('rake-compiler', ['~> 1.2'])
-      s.add_development_dependency('rspec', ['~> 3.13'])
     else
       s.add_dependency('data_objects', ['= 0.10.17'])
       s.add_dependency('rake-compiler', ['~> 1.2'])

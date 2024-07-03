@@ -35,12 +35,11 @@ Gem::Specification.new do |s|
 
   s.homepage = 'https://github.com/firespring/datamapper-do'
   s.require_paths = ['lib']
-  s.rubyforge_project = 'dorb'
   s.summary = 'DataObjects basic API and shared driver specifications'
 
   if s.respond_to? :specification_version
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0')
-      s.add_runtime_dependency('addressable')
+      s.add_runtime_dependency('addressable', '~> 2.8')
     else
       s.add_dependency('addressable')
       s.add_dependency('rspec')
