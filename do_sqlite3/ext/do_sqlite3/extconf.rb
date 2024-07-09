@@ -1,5 +1,3 @@
-ENV['RC_ARCHS'] = '' if RUBY_PLATFORM =~ /darwin/
-
 # Loads mkmf which is used to make makefiles for Ruby extensions
 require 'mkmf'
 require 'date'
@@ -8,12 +6,10 @@ require 'date'
 RbConfig::MAKEFILE_CONFIG['CC'] = ENV['CC'] if ENV['CC']
 
 # Use some default search paths
-dir_config('sqlite3', ['/usr/local', '/opt/local', '/usr'])
+dir_config('sqlite3', %w[/usr/local /opt/local /usr])
 
 # NOTE: use GCC flags unless Visual C compiler is used
-$CFLAGS << ' -Wall ' unless RUBY_PLATFORM =~ /mswin/
-
-$CFLAGS << ' -DRUBY_LESS_THAN_186' if RUBY_VERSION < '1.8.6'
+$CFLAGS << ' -Wall '
 
 $CFLAGS << ' -DHAVE_NO_DATETIME_NEWBANG' unless DateTime.respond_to?(:new!)
 
