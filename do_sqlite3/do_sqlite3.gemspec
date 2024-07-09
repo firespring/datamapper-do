@@ -6,6 +6,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new('>= 0') if s.respond_to? :required_rubygems_version=
   s.authors = ['Dirkjan Bussink']
   s.description = 'Implements the DataObjects API for Sqlite3'
+  s.license = 'Nonstandard'
+  s.homepage = 'https://github.com/firespring/datamapper-do/do_do_sqlite3'
   s.email = 'd.bussink@gmail.com'
   s.extensions = ['ext/do_sqlite3/extconf.rb']
   s.extra_rdoc_files = %w(
