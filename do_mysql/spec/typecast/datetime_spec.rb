@@ -23,7 +23,7 @@ describe 'DataObjects::Mysql with DateTime' do
       @connection.close
     end
 
-    it 'should return the number of created rows' do
+    it 'returns the number of created rows' do
       expect(@values.first).to be_nil
     end
   end

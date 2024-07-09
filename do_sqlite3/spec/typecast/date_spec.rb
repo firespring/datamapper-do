@@ -5,5 +5,5 @@ require 'data_objects/spec/shared/typecast/date_spec'
 # http://www.sqlite.org/datatype3.html
 
 describe 'DataObjects::Sqlite3 with Date' do
-  it_should_behave_like 'supporting Date'
+  it_behaves_like 'supporting Date'
 end

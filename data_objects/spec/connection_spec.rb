@@ -8,7 +8,7 @@ describe DataObjects::Connection do
 
   after { connection.close }
 
-  context 'should define a standard API' do
+  context 'defines a standard API' do
     let(:uri) { 'mock://localhost' }
 
     it { is_expected.to respond_to(:dispose) }

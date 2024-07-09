@@ -8,13 +8,13 @@ describe DataObjects::Result do
 
   after { connection.close }
 
-  context 'should define a standard API' do
-    it 'should provide the number of affected rows' do
+  context 'defines a standard API' do
+    it 'provides the number of affected rows' do
       is_expected.to respond_to(:to_i)
       expect(subject.to_i).to eq 0
     end
 
-    it 'should provide the id of the inserted row' do
+    it 'provides the id of the inserted row' do
       is_expected.to respond_to(:insert_id)
     end
   end

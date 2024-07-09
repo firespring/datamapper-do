@@ -8,7 +8,7 @@ describe DataObjects::Reader do
 
   after { connection.close }
 
-  context 'should define a standard API' do
+  context 'defines a standard API' do
     it { is_expected.to be_a(Enumerable) }
     it { is_expected.to respond_to(:close) }
     it { is_expected.to respond_to(:next!) }

@@ -15,7 +15,7 @@ describe DataObjects::URI do
     its(:query) { is_expected.to eq({'encoding' => 'utf8'}) }
     its(:fragment) { is_expected.to eq 'fragment' }
 
-    it 'should provide a correct string representation' do
+    it 'provides a correct string representation' do
       expect(subject.to_s).to eq 'mock://username@localhost:12345/path?encoding=utf8#fragment'
     end
   end
@@ -33,7 +33,7 @@ describe DataObjects::URI do
     its(:query) { is_expected.to eq({'encoding' => 'utf8'}) }
     its(:fragment) { is_expected.to eq 'fragment' }
 
-    it 'should provide a correct string representation' do
+    it 'provides a correct string representation' do
       expect(subject.to_s).to eq 'jdbc:mock://username@localhost:12345/path?encoding=utf8#fragment'
     end
   end
@@ -44,7 +44,7 @@ describe DataObjects::URI do
     its(:scheme) { is_expected.to eq 'java' }
     its(:path) { is_expected.to eq 'comp/env/jdbc/TestDataSource' }
 
-    it 'should provide a correct string representation' do
+    it 'provides a correct string representation' do
       expect(subject.to_s).to eq 'java:comp/env/jdbc/TestDataSource'
     end
   end

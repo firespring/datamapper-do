@@ -3,5 +3,5 @@ require 'data_objects/spec/shared/error/sql_error_spec'
 
 describe 'DataObjects::Sqlite3 raising SQLError' do
   # This fails for now, need to think of a query that also exposes the issue on sqlite :S
-  #  it_should_behave_like 'raising a SQLError'
+  #  it_behaves_like 'raising a SQLError'
 end

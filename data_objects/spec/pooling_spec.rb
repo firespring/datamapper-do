@@ -98,7 +98,7 @@ describe 'DataObjects::Pooling' do
 
     # NOTE: This assertion is commented out, as our MockConnection objects are
     #       currently in the pool.
-    # DataObjects::Pooling::pools.should be_empty
+    # expect(DataObjects::Pooling::pools).to be_empty
     expect(bob.name).to be_nil
   end
 
