@@ -11,36 +11,12 @@ begin
 
     ext.lib_dir = "lib/#{gemspec.name}"
 
-    ext.cross_compile = true
-    ext.cross_platform = %w(x86-mingw32 x86-mswin32-60)
     ext.cross_config_options << "--with-sqlite3-dir=#{sqlite3_lib}"
     ext.cross_config_options << "--with-sqlite3-include=#{sqlite3_lib}/include"
     ext.cross_config_options << "--with-sqlite3-lib=#{sqlite3_lib}/lib"
 
-    ext.cross_compiling do |gemspec|
-      gemspec.post_install_message = <<-POST_INSTALL_MESSAGE
-
-=============================================================================
-
-  You've installed the binary version of #{gemspec.name}.
-  It was built using Sqlite3 version #{BINARY_VERSION}.
-  It's recommended to use the exact same version to avoid potential issues.
-
-  At the time of building this gem, the necessary DLL files where available
-  in the following download:
-
-  http://www.sqlite.org/sqlite-dll-win32-x86-#{BINARY_VERSION}.zip
-
-  You can put the sqlite3.dll available in this package in your Ruby bin
-  directory, for example C:\\Ruby\\bin
-
-=============================================================================
-
-      POST_INSTALL_MESSAGE
-    end
 
     # automatically add build options to avoid need of manual input
-    ext.config_options << "--with-sqlite3-dir=#{sqlite3_lib}" if RUBY_PLATFORM =~ /mswin|mingw/
   end
 rescue LoadError
   warn 'To compile, install rake-compiler (gem install rake-compiler)'
