@@ -32,9 +32,6 @@ task default: [:spec]
 
 desc 'Run all the specs for the subprojects'
 task :spec do
-  commands = ['mysql -u root -e "create database do_test;"']
-
-  commands.each { |command| `#{command}` }
 
   spec_projects = %w(data_objects do_mysql do_sqlite3)
   spec_projects.each do |gem_name|
