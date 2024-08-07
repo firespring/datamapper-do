@@ -127,15 +127,6 @@ shared_examples 'a Connection allowing default database' do
   end
 end
 
-if defined? JRUBY_VERSION
-  shared_examples 'a Connection with JDBC URL support' do
-    it 'works with JDBC URLs' do
-      conn = DataObjects::Connection.new(CONFIG.jdbc_uri || "jdbc:#{CONFIG.uri.sub('jdbc:', '')}")
-      expect(test_connection(conn)).to eq 1
-    end
-  end
-end
-
 shared_examples 'a Connection with SSL support' do
   if DataObjectsSpecHelpers.test_environment_supports_ssl?
     describe 'connecting with SSL' do
@@ -152,64 +143,6 @@ shared_examples 'a Connection with SSL support' do
       conn = DataObjects::Connection.new(CONFIG.uri)
       expect(conn.secure?).to be false
       conn.close
-    end
-  end
-end
-
-shared_examples 'a Connection via JDNI' do
-  if defined? JRUBY_VERSION
-    require 'java'
-    begin
-      require 'do_jdbc/spec/lib/tyrex-1.0.3.jar'
-      require 'do_jdbc/spec/lib/javaee-api-6.0.jar'
-      require 'do_jdbc/spec/lib/commons-dbcp-1.2.2.jar'
-      require 'do_jdbc/spec/lib/commons-pool-1.3.jar'
-    rescue LoadError
-      pending 'JNDI specs currently require manual download of Tyrex and Apache Commons JARs'
-      break
-    end
-
-    describe 'connecting with JNDI' do
-      before(:all) do
-        java_import java.lang.System
-        java_import javax.naming.Context
-        java_import javax.naming.NamingException
-        java_import javax.naming.Reference
-        java_import javax.naming.StringRefAddr
-        java_import 'tyrex.naming.MemoryContext'
-        java_import 'tyrex.tm.RuntimeContext'
-
-        System.set_property(Context.INITIAL_CONTEXT_FACTORY, 'tyrex.naming.MemoryContextFactory')
-        ref = Reference.new('javax.sql.DataSource',
-                            'org.apache.commons.dbcp.BasicDataSourceFactory', nil)
-        ref.add(StringRefAddr.new('driverClassName',  CONFIG.jdbc_driver))
-        ref.add(StringRefAddr.new('url',              (CONFIG.jdbc_uri || CONFIG.uri)))
-        ref.add(StringRefAddr.new('username',         CONFIG.user))
-        ref.add(StringRefAddr.new('password',         CONFIG.pass))
-
-        @root = MemoryContext.new(nil)
-        ctx   = @root.createSubcontext('comp')
-        ctx   = ctx.createSubcontext('env')
-        ctx   = ctx.createSubcontext('jdbc')
-        ctx.bind('mydb', ref)
-      end
-
-      before do
-        runCtx = RuntimeContext.newRuntimeContext(@root, nil)
-        RuntimeContext.setRuntimeContext(runCtx)
-      end
-
-      after do
-        RuntimeContext.unsetRuntimeContext
-      end
-
-      it 'connects' do
-        c = DataObjects::Connection.new("java:comp/env/jdbc/mydb?driver=#{CONFIG.driver}")
-        expect(c).not_to be_nil
-        expect(test_connection(c)).to eq 1
-      ensure
-        c&.close
-      end
     end
   end
 end

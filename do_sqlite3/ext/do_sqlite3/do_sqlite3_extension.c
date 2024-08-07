@@ -79,7 +79,7 @@ VALUE do_sqlite3_cExtension_load_extension(VALUE self, VALUE path) {
 #endif
 }
 
-void Init_do_sqlite3_extension() {
+void Init_do_sqlite3_extension(void) {
   cDO_Sqlite3Extension = rb_define_class_under(mDO_Sqlite3, "Extension", cDO_Extension);
   rb_global_variable(&cDO_Sqlite3Extension);
   rb_define_method(cDO_Sqlite3Extension, "load_extension", do_sqlite3_cExtension_load_extension, 1);

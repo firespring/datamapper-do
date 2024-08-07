@@ -6,6 +6,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new('>= 0') if s.respond_to? :required_rubygems_version=
   s.authors = ['Dirkjan Bussink']
   s.description = 'Implements the DataObjects API for MySQL'
+  s.license = 'Nonstandard'
+  s.homepage = 'https://github.com/firespring/datamapper-do/do_mysql'
   s.email = 'd.bussink@gmail.com'
   s.extensions = ['ext/do_mysql/extconf.rb']
   s.extra_rdoc_files = %w(ChangeLog.markdown LICENSE README.markdown)
@@ -30,13 +32,9 @@ Gem::Specification.new do |s|
     else
       s.add_dependency('data_objects', ['= 0.10.17'])
       s.add_dependency('rake', ['~> 13.1'])
-      s.add_dependency('rake-compiler', ['~> 1.2'])
-      s.add_dependency('rspec', ['~> 3.13'])
     end
   else
     s.add_dependency('data_objects', ['= 0.10.17'])
     s.add_dependency('rake', ['~> 13.1'])
-    s.add_dependency('rake-compiler', ['~> 1.2'])
-    s.add_dependency('rspec', ['~> 3.13'])
   end
 end

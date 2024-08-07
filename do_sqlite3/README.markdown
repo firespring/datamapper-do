@@ -24,12 +24,9 @@ An example of usage:
 
 This driver is provided for the following platforms:
  * Ruby MRI (1.8.6/7), 1.9: tested on Linux, Mac OS X and Windows platforms.
- * JRuby 1.3.1 + (1.4+ recommended).
- * Rubinius (experimental).
 
 Additionally you should have the following prerequisites:
  * `data_objects` gem
- * `do_jdbc` gem (shared library), if running on JRuby.
 
 ## Install
 

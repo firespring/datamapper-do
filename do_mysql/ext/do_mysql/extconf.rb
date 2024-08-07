@@ -1,5 +1,3 @@
-ENV['RC_ARCHS'] = '' if RUBY_PLATFORM =~ /darwin/
-
 require 'mkmf'
 require 'date'
 
@@ -35,14 +33,7 @@ end
 
 # Allow overriding path to mysql_config on command line using:
 # ruby extconf.rb --with-mysql-config=/path/to/mysql_config
-if RUBY_PLATFORM =~ /mswin|mingw/
-  dir_config('mysql')
-  have_header 'my_global.h'
-  have_header 'mysql.h'
-  have_library 'libmysql'
-  have_func('mysql_query', 'mysql.h')
-  have_func('mysql_ssl_set', 'mysql.h')
-elsif with_config('mysql-config', default_mysql_config_path)
+if with_config('mysql-config', default_mysql_config_path)
   includes = mysql_config('include').split(/\s+/).map do |dir|
     dir.gsub(/^-I/, '')
   end.uniq

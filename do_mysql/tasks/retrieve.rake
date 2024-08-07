@@ -7,58 +7,14 @@ begin
   directory 'vendor'
 
   # only on Windows or cross platform compilation
-  def dlltool(dllname, deffile, libfile)
-    # define if we are using GCC or not
-    if Rake::ExtensionCompiler.mingw_gcc_executable
-      dir = File.dirname(Rake::ExtensionCompiler.mingw_gcc_executable)
-      tool = case RUBY_PLATFORM
-             when /mingw/
-               File.join(dir, 'dlltool.exe')
-             when /linux|darwin/
-               File.join(dir, "#{Rake::ExtensionCompiler.mingw_host}-dlltool")
-             end
-      "#{tool} --dllname #{dllname} --def #{deffile} --output-lib #{libfile}"
-    else
-      raise 'Unsupported platform for cross-compilation (please, contribute some patches).' unless RUBY_PLATFORM =~ /mswin/
 
-      tool = 'lib.exe'
 
-      "#{tool} /DEF:#{deffile} /OUT:#{libfile}"
-    end
-  end
-
-  file "vendor/mysql-noinstall-#{BINARY_VERSION}-win32.zip" => ['vendor'] do |t|
-    base_version = BINARY_VERSION.gsub(/\.[0-9]+$/, '')
-    url = "http://mysql.proserve.nl/Downloads/MySQL-#{base_version}/#{File.basename(t.name)}"
-    when_writing "downloading #{t.name}" do
-      cd File.dirname(t.name) do
-        sh "wget -c #{url} || curl -L -C - -O #{url}"
-      end
-    end
-  end
-
-  file "vendor/mysql-#{BINARY_VERSION}-win32/include/mysql.h" => ["vendor/mysql-noinstall-#{BINARY_VERSION}-win32.zip"] do |t|
-    full_file = File.expand_path(t.prerequisites.last)
-    when_writing "creating #{t.name}" do
-      cd 'vendor' do
-        sh "unzip #{full_file} mysql-#{BINARY_VERSION}-win32/bin/** mysql-#{BINARY_VERSION}-win32/include/** mysql-#{BINARY_VERSION}-win32/lib/**"
-      end
-      # update file timestamp to avoid Rake perform this extraction again.
-      touch t.name
-    end
-  end
 
   # clobber vendored packages
   CLOBBER.include('vendor')
 
   # vendor:mysql
-  task 'vendor:mysql' => ["vendor/mysql-#{BINARY_VERSION}-win32/include/mysql.h"]
 
   # hook into cross compilation vendored mysql dependency
-  if RUBY_PLATFORM =~ /mingw|mswin/
-    Rake::Task['compile'].prerequisites.unshift 'vendor:mysql'
-  elsif Rake::Task.tasks.map(&:name).include? 'cross'
-    Rake::Task['cross'].prerequisites.unshift 'vendor:mysql'
-  end
 rescue LoadError
 end

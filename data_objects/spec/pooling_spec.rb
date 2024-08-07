@@ -46,11 +46,7 @@ describe 'DataObjects::Pooling' do
       class << self
         remove_method :pool_size if instance_methods(false).any? { |m| m.to_sym == :pool_size }
         def pool_size
-          if RUBY_PLATFORM =~ /java/
-            20
-          else
-            2
-          end
+          2
         end
       end
 
@@ -102,7 +98,7 @@ describe 'DataObjects::Pooling' do
 
     # NOTE: This assertion is commented out, as our MockConnection objects are
     #       currently in the pool.
-    # DataObjects::Pooling::pools.should be_empty
+    # expect(DataObjects::Pooling::pools).to be_empty
     expect(bob.name).to be_nil
   end
 

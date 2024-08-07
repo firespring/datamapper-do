@@ -1,5 +1,3 @@
-JRUBY = RUBY_PLATFORM =~ /java/ unless defined?(JRUBY)
-
 shared_examples 'supporting DateTime' do
   before :all do
     setup_test_environment

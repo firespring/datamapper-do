@@ -9,55 +9,17 @@ module DataObjects
     def self.new(uri_s)
       uri = DataObjects::URI.parse(uri_s)
 
-      case uri.scheme.to_sym
-      when :java
-        warn 'JNDI URLs (connection strings) are only for use with JRuby' unless RUBY_PLATFORM =~ /java/
-
-        uri.query.delete('scheme')
-        driver   = uri.query.delete('driver')
-
-        conn_uri = uri.to_s.gsub(/\?$/, '')
-      when :jdbc
-        warn 'JDBC URLs (connection strings) are only for use with JRuby' unless RUBY_PLATFORM =~ /java/
-
-        path = uri.subscheme
-        driver = if path.split(':').first == 'sqlite'
-                   'sqlite3'
-                 elsif path.split(':').first == 'postgresql'
-                   'postgres'
-                 else
-                   path.split(':').first
-                 end
-
-        conn_uri = uri_s # NOTE: for now, do not reformat this JDBC connection
-      # string -- or, in other words, do not let
-      # DataObjects::URI#to_s be called -- as it is not
-      # correctly handling JDBC URLs, and in doing so, causing
-      # java.sql.DriverManager.getConnection to throw a
-      # 'No suitable driver found for...' exception.
-      else
-        driver   = uri.scheme
-        conn_uri = uri
-      end
+      driver   = uri.scheme
+      conn_uri = uri
 
       # Exceptions to how a driver class is determined for a given URI
-      driver_class = if driver == 'sqlserver'
-                       'SqlServer'
-                     else
-                       driver.capitalize
-                     end
+      driver_class = driver.capitalize
 
       clazz = DataObjects.const_get(driver_class)::Connection
       unless clazz.method_defined? :close
-        if uri.scheme.to_sym == :java
-          clazz.class_eval do
-            alias_method :close, :dispose
-          end
-        else
-          clazz.class_eval do
-            include Pooling
-            alias_method :close, :release
-          end
+        clazz.class_eval do
+          include Pooling
+          alias_method :close, :release
         end
       end
       clazz.new(conn_uri)

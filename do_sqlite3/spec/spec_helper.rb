@@ -1,5 +1,4 @@
 $TESTING = true
-JRUBY = RUBY_PLATFORM =~ /java/
 
 require 'rubygems'
 require 'rspec'
@@ -14,10 +13,8 @@ $LOAD_PATH.unshift(driver_lib) unless $LOAD_PATH.include?(driver_lib)
 # Prepend data_objects/do_jdbc in the repository to the load path.
 # DO NOT USE installed gems, except when running the specs from gem.
 repo_root = File.expand_path('../..', __dir__)
-(['data_objects'] << ('do_jdbc' if JRUBY)).compact.each do |lib|
-  lib_path = "#{repo_root}/#{lib}/lib"
-  $LOAD_PATH.unshift(lib_path) if File.directory?(lib_path) && !$LOAD_PATH.include?(lib_path)
-end
+lib_path = "#{repo_root}/data_objects/lib"
+$LOAD_PATH.unshift(lib_path) if File.directory?(lib_path) && !$LOAD_PATH.include?(lib_path)
 
 require 'data_objects'
 require 'data_objects/spec/setup'
@@ -29,12 +26,6 @@ CONFIG.scheme       = 'sqlite3'
 CONFIG.database     = ENV['DO_SQLITE3_DATABASE'] || ':memory:'
 CONFIG.uri          = ENV['DO_SQLITE3_SPEC_URI'] || "#{CONFIG.scheme}:#{CONFIG.database}"
 CONFIG.driver       = 'sqlite3'
-CONFIG.jdbc_driver  = begin
-  DataObjects::Sqlite3.const_get('JDBC_DRIVER')
-rescue
-  nil
-end
-CONFIG.jdbc_uri = CONFIG.uri.sub('sqlite3', 'jdbc:sqlite')
 
 module DataObjectsSpecHelpers
   def setup_test_environment
