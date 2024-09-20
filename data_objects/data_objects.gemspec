@@ -1,5 +1,5 @@
 Gem::Specification.new do |s|
-  s.name = 'data_objects'
+  s.name = 'sbf-data_objects'
   s.version = '0.10.17'
   s.required_ruby_version = '>= 2.7.8'
 
