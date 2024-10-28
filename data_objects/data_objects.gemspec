@@ -1,13 +1,13 @@
 Gem::Specification.new do |s|
-  s.name = 'data_objects'
+  s.name = 'sbf-data_objects'
   s.version = '0.10.17'
   s.required_ruby_version = '>= 2.7.8'
 
   s.required_rubygems_version = Gem::Requirement.new('>= 0') if s.respond_to? :required_rubygems_version=
-  s.authors = ['Dirkjan Bussink']
+  s.authors = ['opensource_firespring']
   s.description = 'Provide a standard and simplified API for communicating with RDBMS from Ruby'
   s.license = 'Nonstandard'
-  s.email = 'd.bussink@gmail.com'
+  s.email = ['opensource@firespring.com']
   s.extra_rdoc_files = [
     'README.markdown'
   ]
