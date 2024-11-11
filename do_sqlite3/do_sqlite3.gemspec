@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'sbf-do_sqlite3'
-  s.version = '0.10.17'
+  s.version = '0.11.0'
   s.required_ruby_version = '>= 2.7.8'
 
   s.required_rubygems_version = Gem::Requirement.new('>= 0') if s.respond_to? :required_rubygems_version=
@@ -30,13 +30,13 @@ Gem::Specification.new do |s|
 
   if s.respond_to? :specification_version
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0')
-      s.add_runtime_dependency('sbf-data_objects', ['= 0.10.17'])
+      s.add_runtime_dependency('sbf-data_objects', ['= 0.11.0'])
     else
-      s.add_dependency('sbf-data_objects', ['= 0.10.17'])
+      s.add_dependency('sbf-data_objects', ['= 0.11.0'])
       s.add_dependency('rake-compiler', ['~> 1.2'])
     end
   else
-    s.add_dependency('sbf-data_objects', ['= 0.10.17'])
+    s.add_dependency('sbf-data_objects', ['= 0.11.0'])
     s.add_dependency('rspec', ['~> 3.13'])
   end
 end
